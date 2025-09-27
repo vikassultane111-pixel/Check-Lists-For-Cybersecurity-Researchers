@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Pentest Playbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e2e8f0; /* slate-200 */
+            color: #1e293b; /* slate-800 */
+            min-height: 100vh;
+        }
+        .main-container {
+            background-color: #ffffff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .checklist-item.completed label {
+            text-decoration: line-through;
+            color: #94a3b8; /* slate-400 */
+        }
+        details {
+            transition: all 0.3s ease-in-out;
+        }
+        details summary {
+            list-style: none;
+            cursor: pointer;
+            outline: none;
+            border-bottom: 1px solid #e2e8f0; /* slate-200 */
+            transition: background-color 0.2s ease-in-out;
+        }
+        #checklist-container > details:last-of-type {
+             border-bottom: 1px solid #e2e8f0;
+        }
+        details:not([open]) summary:hover {
+            background-color: #f8fafc; /* slate-50 */
+        }
+        details summary::-webkit-details-marker { display: none; }
+        details summary .arrow { transition: transform 0.3s ease; color: #94a3b8; }
+        details[open] > summary .arrow { transform: rotate(90deg); }
+        
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
+        
+        input[type="checkbox"] {
+            appearance: none; background-color: transparent; margin-right: 12px; color: #0d9488;
+            width: 1.25em; height: 1.25em; border: 2px solid #cbd5e1;
+            border-radius: 4px; transform: translateY(-0.075em); display: grid; place-content: center;
+            flex-shrink: 0; cursor: pointer; transition: all 0.2s;
+        }
+        input[type="checkbox"]:hover { border-color: #5eead4; }
+        input[type="checkbox"]::before { content: ""; width: 0.65em; height: 0.65em; transform: scale(0); transition: 120ms transform ease-in-out; box-shadow: inset 1em 1em currentColor; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); }
+        input[type="checkbox"]:checked { background-color: #0d9488; border-color: #5eead4; }
+        input[type="checkbox"]:checked::before { transform: scale(1); color: #ffffff; }
+        
+        .nested-item { padding-left: 2.5rem; }
+        .sub-details {
+            margin-left: 0; 
+        }
+        .sub-details summary {
+            font-weight: normal;
+            font-size: 1rem;
+            padding: 0;
+            border: none;
+            display: flex;
+            align-items: center;
+        }
+         .sub-details summary:hover {
+            background-color: transparent;
+         }
+         .sub-details[open] summary {
+            margin-bottom: 0.5rem;
+         }
+         .sub-details .arrow-nested {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
+            color: #94a3b8;
+            transition: transform 0.3s ease;
+         }
+        .sub-details[open] .arrow-nested {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8 flex items-center justify-center">
+
+    <div class="w-full max-w-4xl mx-auto main-container p-6 sm:p-8 rounded-2xl">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-500">The Ultimate Pentesting Playbook</h1>
+            <p class="text-slate-500 mt-3">The most comprehensive, stepwise checklist for modern security assessments.</p>
+        </header>
+
+        <div class="bg-slate-100 p-4 rounded-xl shadow-inner border border-slate-200/50 mb-8">
+            <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-slate-500">Overall Progress</span><span id="progress-text" class="text-sm font-bold text-teal-600">0%</span></div>
+            <div class="w-full bg-slate-200 rounded-full h-3"><div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-cyan-500 h-3 rounded-full transition-all duration-500 ease-out" style="width: 0%;"></div></div>
+            <div class="flex flex-col sm:flex-row gap-4 mt-4">
+                <input type="text" id="search-box" placeholder="Search vulnerabilities..." class="flex-grow w-full bg-white border border-slate-300 text-slate-700 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all">
+                <button id="reset-button" class="w-full sm:w-auto bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-lg transition-colors">Reset</button>
+            </div>
+        </div>
+
+        <div class="space-y-0" id="checklist-container">
+            <!-- All details sections will be populated here by the script -->
+        </div>
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checklistData = [
+                {
+                    title: "1. Reconnaissance / Information Disclosure",
+                    items: [
+                        "Subdomain enumeration",
+                        { "text": "DNS misconfiguration", "nested": ["Zone transfer (AXFR)", "Exposed DNS records (TXT, SPF, DMARC, DKIM)"] },
+                        "Orphaned subdomains / dangling DNS",
+                        "Cloud storage buckets exposed (S3, GCP, Azure)",
+                        "Publicly exposed API docs (Swagger/OpenAPI/GraphQL)",
+                        "Git repo leakage (.git/)",
+                        "Backup/config files exposed (.bak, .old, .zip)",
+                        "Robots.txt / sitemap leaks",
+                        "Error message disclosure",
+                        "Stack trace exposure",
+                        "Metadata in files (EXIF, PDF, DOCX)",
+                        "Commented-out sensitive code in HTML/JS"
+                    ]
+                },
+                {
+                    title: "2. Authentication",
+                    items: [
+                        "Weak password policy",
+                        "Credential stuffing vulnerability",
+                        "Brute force not rate-limited",
+                        "Default credentials",
+                        "Account enumeration via responses",
+                        { "text": "Insecure password reset flow", "nested": ["Reset token predictability / leakage", "Password reset via GET link", "Email/phone based reset bypass"] },
+                        { "text": "2FA bypass (logic flaws)", "nested": ["SMS/Email OTP reuse or interception"] },
+                        "Missing account lockout",
+                        "Login CSRF",
+                        { "text": "OAuth misconfigurations", "nested": ["Authorization code interception", "Token leakage in URL", "Open redirect in redirect_uri", "State parameter not validated"] },
+                        "SAML / OIDC misconfig",
+                        "Social login abuse (account takeover via link)"
+                    ]
+                },
+                {
+                    title: "3. Session Management",
+                    items: [
+                        "Session fixation",
+                        "Session ID in URL",
+                        "Session not invalidated on logout",
+                        { "text": "JWT vulnerabilities", "nested": ["None algorithm", "Weak signing key", "Missing expiration", "Replay attacks"] },
+                        "Cookie flags missing (HttpOnly, Secure, SameSite)",
+                        "Overly broad cookie scope (Path/Domain)",
+                        "Session timeout not enforced"
+                    ]
+                },
+                {
+                    title: "4. Access Control (Authorization)",
+                    items: [
+                        "IDOR / BOLA (Insecure Direct Object References)",
+                        "Vertical privilege escalation (user → admin)",
+                        "Horizontal privilege escalation (user A → user B data)",
+                        "Missing function-level access control",
+                        "Mass assignment (insecure deserialization of JSON params)",
+                        "Role manipulation via hidden fields / API",
+                        "Privilege escalation via password reset of admin accounts",
+                        { "text": "CORS misconfig", "nested": ["Wildcard * with credentials", "Reflection of Origin header", "Internal origin trust"] }
+                    ]
+                },
+                {
+                    title: "5. Injection",
+                    items: [
+                        { "text": "SQL Injection", "nested": ["Classic (Boolean/Union/Time)", "Blind SQLi", "Second-order SQLi", "Stored procedure injection"] },
+                        "NoSQL Injection (Mongo, Couch, etc.)",
+                        "Command Injection",
+                        "Code Injection",
+                        "CRLF Injection (HTTP response splitting)",
+                        "Email header injection (SMTP)",
+                        "XPath Injection",
+                        "LDAP Injection",
+                        "GraphQL Injection (directive abuse, query injection)",
+                        "Template Injection (SSTI, e.g., Jinja, Twig, Liquid)",
+                        "Expression Language Injection (EL in Java/Spring)",
+                        "Log Injection (Log4Shell type)"
+                    ]
+                },
+                {
+                    title: "6. Cross-Site Scripting (XSS)",
+                    items: [
+                        "Reflected XSS",
+                        "Stored XSS",
+                        "DOM-based XSS",
+                        "Self-XSS",
+                        "XSS via SVG/MathML/XML",
+                        "XSS via third-party integrations (analytics, widgets)",
+                        "CSP bypass XSS"
+                    ]
+                },
+                {
+                    title: "7. Cross-Site Request Forgery (CSRF)",
+                    items: [
+                        "Missing CSRF tokens",
+                        "CSRF via GET requests (unsafe GET)",
+                        "Token not bound to user session",
+                        "SameSite cookie misconfig allowing CSRF",
+                        "Login CSRF / account linking"
+                    ]
+                },
+                {
+                    title: "8. File Handling",
+                    items: [
+                        "Unrestricted file upload",
+                        "MIME type validation bypass",
+                        "Polyglot file upload (image+script)",
+                        "File path traversal (../)",
+                        "Remote File Inclusion (RFI)",
+                        "Local File Inclusion (LFI)",
+                        "Zip Slip (path traversal inside zip)",
+                        "Image processing vulnerabilities (ImageTragick)",
+                        "Insecure temp file handling"
+                    ]
+                },
+                {
+                    title: "9. Server-Side Request Forgery (SSRF)",
+                    items: [
+                        "Blind SSRF",
+                        "SSRF via file://, gopher://, dict:// schemes",
+                        "SSRF → internal port scan",
+                        "SSRF → cloud metadata service (AWS/GCP/Azure)",
+                        "SSRF via DNS rebinding"
+                    ]
+                },
+                {
+                    title: "10. XML / XXE",
+                    items: [
+                        "External entity expansion",
+                        "Blind XXE via OOB exfiltration",
+                        "Billion laughs (DoS)",
+                        "XML parameter entities",
+                        "Insecure SOAP parser",
+                        "SAML signature wrapping"
+                    ]
+                },
+                 {
+                    title: "11. API Security",
+                    items: [
+                        { "category": "Authentication Issues", "nested": ["Broken User Authentication", "Weak / Missing MFA", "Default / Hardcoded Credentials", "API Keys or Tokens in Client-side Code", "JWT Misconfigurations (alg=none, weak keys, no expiry, no validation)", "Insecure Refresh Token Handling", "Poor Session Management (missing rotation, long TTLs, no binding)", "Replay Attacks on Authentication Tokens"] },
+                        { "category": "Authorization Issues", "nested": ["Broken Object Level Authorization (BOLA / IDOR)", "Broken Function Level Authorization (BFLA)", "Mass Assignment / Parameter Tampering", "Vertical Privilege Escalation", "Horizontal Privilege Escalation", "Insecure Direct Access to Admin Endpoints"] },
+                        { "category": "Data Exposure & Privacy", "nested": ["Excessive Data Exposure (returning unnecessary fields)", "Sensitive Data Exposure in Responses", "Sensitive Data in Logs / Error Messages", "Lack of Data Minimization (PII leakage)", "Improper Data Classification / Tagging", "Information Disclosure through Metadata / Headers"] },
+                        { "category": "Rate Limiting & Abuse", "nested": ["Missing Rate Limiting on Auth Endpoints", "No Brute-force Protection (Password/OTP/2FA)", "Lack of Quotas for API Keys", "Unlimited File Uploads or Large Payload Abuse", "DoS via Large or Complex Requests"] },
+                        { "category": "Injection Attacks", "nested": ["SQL Injection in API Params", "NoSQL Injection", "GraphQL Injection (nested queries, field injection)", "LDAP Injection", "Command Injection in API Calls", "Template / Expression Injection", "XPath / XML Injection"] },
+                        { "category": "API Design & Endpoint Issues", "nested": ["Exposed Admin APIs", "Exposed Debug / Staging Endpoints", "Verbose Error Responses", "Deprecated / Old Version APIs Accessible", "Overly Permissive Swagger / OpenAPI Docs", "Insecure Default Routes"] },
+                        { "category": "Transport & Protocol Security", "nested": ["Insecure Transport (HTTP, Weak TLS)", "Missing HSTS on API Endpoints", "TLS Certificate Misconfigurations", "Insecure gRPC Endpoints (no mTLS, no auth)", "Insecure WebSocket Channels (no auth, weak origin checks)"] },
+                        { "category": "Business Logic Vulnerabilities", "nested": ["Price Manipulation / Parameter Tampering", "Transaction Replay Attacks", "Lack of Idempotency (double spending)", "Race Conditions in API Calls", "Improper Workflow Enforcement (skipping steps)"] },
+                        { "category": "Webhook & Third-party Integrations", "nested": ["Insecure Webhook Verification (no signature/HMAC)", "Replay Attacks on Webhook Payloads", "Insecure Callback URLs (Open Redirects, SSRF)", "Blind Trust in Third-party Responses"] },
+                        { "category": "CORS & Cross-domain Issues", "nested": ["Misconfigured CORS (wildcard with credentials)", "Overly Permissive Preflight Responses", "Cross-domain Credential Leakage"] },
+                        { "category": "File Handling & Upload APIs", "nested": ["Unrestricted File Uploads", "Path Traversal via Filename", "MIME Type Confusion", "Upload of Executable Scripts / Webshells", "Direct Access to Uploaded Files (no auth, no randomization)"] },
+                        { "category": "SSRF & Server-side Issues", "nested": ["SSRF via URL Fetch APIs", "SSRF via File Upload / Image Processing", "DNS Rebinding in API Calls", "Blind SSRF with Out-of-band Interaction"] },
+                        { "category": "GraphQL Specific Issues", "nested": ["Introspection Enabled in Production", "Over-fetching / Excessive Query Depth", "No Complexity Limits (DoS via deep queries)", "Missing Authorization on Fields", "Batch Queries Abuse"] },
+                        { "category": "WebSocket / Real-time API Issues", "nested": ["Missing Authentication on WS Upgrade", "Missing Authorization per Message Type", "Lack of Rate Limiting / Flood Protection", "Trusting Client-side Event Data"] },
+                        { "category": "Misc / Advanced API Attacks", "nested": ["Host Header Injection / Routing Confusion", "HTTP Request Smuggling", "Cache Poisoning via API Proxies", "Insecure API Gateways / Load Balancers", "Shadow APIs (undocumented, forgotten endpoints)", "Zombie APIs (deprecated but still live)"] }
+                    ]
+                },
+                {
+                    title: "12. Business Logic Vulnerabilities",
+                    items: [ "Bypass of workflow steps (skip payment → success)", "Parameter tampering (price manipulation)", "Race conditions (double spend / multiple redemption)", "Coupon/voucher abuse", "Account takeover via flawed flows", "Privilege creep (upgrading role through logic flaw)", "Referral/invite abuse", "Improper concurrency control" ]
+                },
+                {
+                    title: "13. Cryptography & Sensitive Data",
+                    items: [ "Hardcoded API keys/secrets", "Weak encryption algorithms (MD5, SHA1, RC4)", "Insecure random generators", "Sensitive data in GET URLs", "Token leakage via logs/referrers", "Unencrypted storage (DB, backups)", { "text": "TLS misconfigurations", "nested": ["Weak cipher suites", "TLS downgrade", "Self-signed or expired certs", "Missing HSTS"] } ]
+                },
+                {
+                    title: "14. Security Misconfigurations",
+                    items: [ "Directory listing enabled", "Default pages/admin panels accessible", "Debug mode enabled", "Verbose error messages", "CORS misconfiguration", "HTTP methods enabled (PUT, DELETE, TRACE)", { "text": "Missing or weak security headers", "nested": ["CSP", "X-Frame-Options", "X-Content-Type-Options", "Referrer-Policy"] } ]
+                },
+                {
+                    title: "15. Open Redirects",
+                    items: [ "Parameter-based redirects without validation", "Chained open redirects (via URL shorteners)", "Open redirect inside OAuth flows" ]
+                },
+                {
+                    title: "16. Clickjacking / UI Redress",
+                    items: [ "Missing X-Frame-Options", "Missing frame-ancestors CSP", "Drag-and-drop UI attacks", "Clipboard injection" ]
+                },
+                {
+                    title: "17. WebSockets",
+                    items: [ "No authentication on socket upgrade", "CSRF on WebSocket handshake", "Insecure origin checks", "Message tampering (no validation)" ]
+                },
+                {
+                    title: "18. Deserialization",
+                    items: [ "Insecure deserialization in Java/PHP/Python/.NET", "Remote code execution via gadgets", "Mass assignment / binding issues", "Deserialization DoS (billion object graph)" ]
+                },
+                {
+                    title: "19. Cloud / Infrastructure",
+                    items: [ "Publicly exposed cloud storage buckets", "Publicly writable buckets", "Exposed cloud metadata APIs", "Over-permissive IAM roles", "Misconfigured CI/CD pipelines", "Secrets in container images", "Kubernetes misconfig (dashboard exposed)" ]
+                },
+                {
+                    title: "20. Supply Chain / Dependency",
+                    items: [ "Outdated vulnerable libraries", "Dependency confusion (internal pkg names)", "Typosquatting packages", "Malicious pre/post-install scripts", "Compromised third-party scripts" ]
+                },
+                {
+                    title: "21. Other / Misc",
+                    items: [ "HTTP request smuggling", "Host header injection", "Cache poisoning", "Web cache deception", "Email header injection", "SMTP injection", "CSV injection (Excel formula injection)", "Race conditions (TOCTOU)", "SSRF to RCE chaining", "Prototype pollution (JS apps)", "Insecure regex (ReDoS)" ]
+                }
+            ];
+
+            const checklistContainer = document.getElementById('checklist-container');
+            const mainArrowSVG = `<svg class="arrow w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+            const nestedArrowSVG = `<svg class="arrow-nested w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+
+            function createChecklistItemHTML(item, isNested = false) {
+                 return `<div class="checklist-item ${isNested ? 'nested-item' : ''}"><div class="flex items-center"><input type="checkbox"><label>${item}</label></div></div>`;
+            }
+
+            checklistData.forEach(section => {
+                const details = document.createElement('details');
+                
+                const summary = document.createElement('summary');
+                summary.className = 'p-4 font-semibold text-lg flex justify-between items-center';
+                summary.innerHTML = `<span>${section.title}</span>${mainArrowSVG}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'p-4 space-y-3';
+
+                section.items.forEach(item => {
+                    if (typeof item === 'string') {
+                        contentDiv.innerHTML += createChecklistItemHTML(item);
+                    } else if (item.text) { 
+                        let nestedHTML = item.nested.map(subItem => createChecklistItemHTML(subItem, true)).join('');
+                        contentDiv.innerHTML += `
+                            <details class="sub-details">
+                                <summary class="flex items-center w-full">
+                                    <div class="flex items-center flex-grow">
+                                        <input type="checkbox" class="mr-3">
+                                        ${nestedArrowSVG}
+                                        <label class="cursor-pointer">${item.text}</label>
+                                    </div>
+                                </summary>
+                                <div class="pt-2 pl-4 space-y-3">${nestedHTML}</div>
+                            </details>
+                        `;
+                    } else if (item.category) { 
+                        let nestedChecklistHTML = item.nested.map(subItem => createChecklistItemHTML(subItem)).join('');
+                        contentDiv.innerHTML += `
+                            <details class="sub-details">
+                                <summary class="p-3 font-semibold flex justify-between items-center">${item.category} <span class="arrow text-gray-500 text-xs">${mainArrowSVG}</span></summary>
+                                <div class="p-3 border-t border-slate-200 space-y-3">${nestedChecklistHTML}</div>
+                            </details>
+                        `;
+                    }
+                });
+
+                details.appendChild(summary);
+                details.appendChild(contentDiv);
+                checklistContainer.appendChild(details);
+            });
+
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const searchBox = document.getElementById('search-box');
+            const resetButton = document.getElementById('reset-button');
+            const totalItems = checkboxes.length;
+
+            const updateProgress = () => {
+                const checkedItems = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked').length;
+                const percentage = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+                progressBar.style.width = `${percentage}%`;
+                progressText.textContent = `${percentage}%`;
+            };
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    e.target.closest('.checklist-item').classList.toggle('completed', e.target.checked);
+                    updateProgress();
+                });
+            });
+
+            searchBox.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                 document.querySelectorAll('#checklist-container > details').forEach(mainAccordion => {
+                    let mainHasVisibleItem = false;
+                    
+                    mainAccordion.querySelectorAll('.checklist-item, .sub-details > summary').forEach(item => {
+                        const isMatch = item.textContent.toLowerCase().includes(searchTerm);
+                        const container = item.closest('.checklist-item') || item.closest('.sub-details');
+                        if(container) container.style.display = isMatch ? 'block' : 'none';
+                        if(isMatch) mainHasVisibleItem = true;
+                    });
+                    
+                    if (searchTerm.length > 0) {
+                         mainAccordion.open = mainHasVisibleItem;
+                    }
+                });
+            });
+
+            resetButton.addEventListener('click', () => {
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    cb.closest('.checklist-item').classList.remove('completed');
+                });
+                document.querySelectorAll('#checklist-container details').forEach(acc => acc.open = false);
+                updateProgress();
+            });
+            
+            document.querySelectorAll('details').forEach(detail => {
+                detail.addEventListener('toggle', (e) => {
+                    const arrow = e.currentTarget.querySelector(':scope > summary > .arrow, :scope > summary > .arrow-nested');
+                    if(arrow) {
+                       if (e.currentTarget.open) {
+                           arrow.style.transform = 'rotate(90deg)';
+                       } else {
+                           arrow.style.transform = 'rotate(0deg)';
+                       }
+                    }
+                });
+            });
+            
+            // Prevent parent details from closing when a nested one is clicked
+            document.querySelectorAll('.sub-details summary').forEach(summary => {
+                summary.addEventListener('click', e => e.stopPropagation());
+            });
+
+
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
+
