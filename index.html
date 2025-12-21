@@ -2,7 +2,7 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ultimate VAPT Framework | Security Audit Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
@@ -19,13 +19,29 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 12s linear infinite',
+                        'pulse-glow': 'pulse-glow 3s infinite',
+                        'scan': 'scan 4s linear infinite',
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { opacity: 0.6, filter: 'drop-shadow(0 0 5px rgba(99, 102, 241, 0.5))' },
+                            '50%': { opacity: 1, filter: 'drop-shadow(0 0 15px rgba(99, 102, 241, 0.8))' },
+                        },
+                        'scan': {
+                            '0%': { transform: 'translateY(-100%)', opacity: 0 },
+                            '50%': { opacity: 1 },
+                            '100%': { transform: 'translateY(100%)', opacity: 0 },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        /* CSS Variables for Theming */
+        /* CSS Variables */
         :root {
             --bg-body: #f8fafc;
             --bg-sidebar: #ffffff;
@@ -39,7 +55,6 @@
             --checkbox-checked: #10b981;
         }
 
-        /* Dark Mode Overrides */
         .dark {
             --bg-body: #050505;
             --bg-sidebar: #0a0a0a;
@@ -59,204 +74,203 @@
             transition: background-color 0.3s, color 0.3s;
         }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 3px; opacity: 0.2; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
-
-        /* Accordion Animation */
+        
         .accordion-content {
-            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-out;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0; opacity: 0; overflow: hidden;
         }
-        .accordion-content.open {
-            max-height: 5000px;
-            opacity: 1;
-        }
+        .accordion-content.open { max-height: 5000px; opacity: 1; }
 
-        /* FIXED CHECKBOX STYLING (SVG ICON) */
         .custom-checkbox {
-            appearance: none;
-            width: 1.25rem;
-            height: 1.25rem;
-            border: 2px solid var(--checkbox-border);
-            border-radius: 6px;
-            background-color: transparent;
-            cursor: pointer;
-            position: relative;
+            appearance: none; width: 1.25rem; height: 1.25rem;
+            border: 2px solid var(--checkbox-border); border-radius: 6px;
+            background-color: transparent; cursor: pointer; position: relative;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .custom-checkbox:hover {
-            border-color: var(--accent-color);
+            display: flex; align-items: center; justify-content: center;
         }
         .custom-checkbox:checked {
-            background-color: var(--checkbox-checked);
-            border-color: var(--checkbox-checked);
-            /* SVG Checkmark Data URI */
+            background-color: var(--checkbox-checked); border-color: var(--checkbox-checked);
             background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            transform: scale(1.05);
+            background-size: 100% 100%; transform: scale(1.05);
         }
 
-        /* Task Card */
         .task-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            transition: all 0.2s; border-left: 3px solid transparent;
         }
         .task-card:hover {
-            transform: translateX(4px);
-            border-color: var(--accent-color);
-            border-left-color: var(--accent-color);
-            background-color: var(--hover-bg);
+            transform: translateX(2px); border-color: var(--accent-color);
+            border-left-color: var(--accent-color); background-color: var(--hover-bg);
         }
-        .task-card.checked {
-            border-left-color: var(--checkbox-checked);
-            opacity: 0.7;
-            background-color: var(--hover-bg);
-        }
+        .task-card.checked { border-left-color: var(--checkbox-checked); opacity: 0.7; background-color: var(--hover-bg); }
 
-        /* Tool Badge */
         .tool-badge {
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            border-radius: 9999px;
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            color: var(--accent-color);
-            font-family: 'JetBrains Mono', monospace;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 9999px;
+            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--accent-color); font-family: 'JetBrains Mono', monospace;
         }
         
-        /* OWASP Badge */
         .owasp-badge {
             background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.2));
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3); color: #fbbf24;
         }
-        .dark .owasp-badge { color: #fbbf24; }
         .light .owasp-badge { color: #d97706; border-color: #d97706; background: rgba(251, 191, 36, 0.1); }
 
-        /* Sidebar Item */
-        .sidebar-item {
-            color: var(--text-secondary);
-        }
-        .sidebar-item:hover {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
-        .sidebar-item.active-domain {
-            background-color: var(--hover-bg);
-            color: var(--text-primary);
-        }
+        .sidebar-item:hover { background-color: var(--hover-bg); color: var(--text-primary); }
+        .sidebar-item.active-domain { background-color: var(--hover-bg); color: var(--text-primary); }
 
+        /* Mobile Sidebar Transitions */
+        .mobile-sidebar-overlay {
+            transition: opacity 0.3s ease;
+            opacity: 0; pointer-events: none;
+        }
+        .mobile-sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .sidebar-panel {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%);
+        }
+        .sidebar-panel.active { transform: translateX(0); }
+
+        /* Typing Effect Cursor */
+        .typing-cursor::after {
+            content: '|'; animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
     <!-- Top Navigation -->
-    <header class="h-16 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)] flex items-center justify-between px-6 shrink-0 z-20 shadow-sm transition-colors duration-300">
+    <header class="h-16 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)] flex items-center justify-between px-4 md:px-6 shrink-0 z-30 shadow-sm transition-colors duration-300 relative">
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-                <i class="fa-solid fa-shield-cat text-lg"></i>
+            <!-- Mobile Menu Toggle -->
+            <button onclick="app.toggleMobileSidebar()" class="md:hidden text-[var(--text-secondary)] hover:text-[var(--accent-color)] p-2">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+
+            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 shrink-0">
+                <i class="fa-solid fa-shield-cat"></i>
             </div>
-            <div>
-                <h1 class="font-bold text-[var(--text-primary)] tracking-tight text-lg">Security Audit Pro</h1>
-                <div class="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-semibold">Ultimate VAPT Framework</div>
+            <div class="overflow-hidden">
+                <h1 class="font-bold text-[var(--text-primary)] tracking-tight text-base md:text-lg whitespace-nowrap">Security Audit Pro</h1>
+                <div class="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-semibold hidden sm:block">Enterprise VAPT Framework</div>
             </div>
         </div>
         
-        <div class="flex items-center gap-6">
-            <div class="hidden md:flex flex-col items-end">
+        <div class="flex items-center gap-3 md:gap-6">
+            <div class="hidden lg:flex flex-col items-end">
                 <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium">
-                    <span>Audit Coverage</span>
+                    <span>Coverage</span>
                     <span id="global-percent" class="text-indigo-500 font-mono font-bold text-sm">0%</span>
                 </div>
-                <div class="w-40 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
+                <div class="w-32 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
                     <div id="global-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
             </div>
             
-            <div class="h-8 w-px bg-[var(--border-color)] hidden md:block"></div>
+            <div class="h-8 w-px bg-[var(--border-color)] hidden lg:block"></div>
             
             <div class="flex gap-2">
-                <!-- Theme Toggle -->
-                <button onclick="app.toggleTheme()" class="h-9 w-9 rounded-lg border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-secondary)] transition-all flex items-center justify-center" title="Toggle Theme">
+                <button onclick="app.toggleTheme()" class="h-9 w-9 rounded-lg border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-secondary)] transition-all flex items-center justify-center">
                     <i class="fa-solid fa-sun hidden dark:block"></i>
                     <i class="fa-solid fa-moon block dark:hidden"></i>
                 </button>
 
-                <button onclick="app.resetData()" class="h-9 px-4 rounded-lg border border-[var(--border-color)] hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 text-[var(--text-secondary)] transition-all text-xs font-medium flex items-center gap-2" title="Reset All">
-                    <i class="fa-solid fa-rotate-right"></i> Reset
+                <button onclick="app.resetData()" class="h-9 w-9 md:w-auto md:px-4 rounded-lg border border-[var(--border-color)] hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 text-[var(--text-secondary)] transition-all text-xs font-medium flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> <span class="hidden md:inline">Reset</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex-1 flex overflow-hidden relative">
         
+        <!-- Mobile Overlay -->
+        <div id="mobile-overlay" onclick="app.toggleMobileSidebar()" class="mobile-sidebar-overlay absolute inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"></div>
+
         <!-- Sidebar -->
-        <aside class="w-80 bg-[var(--bg-sidebar)] border-r border-[var(--border-color)] flex flex-col h-full shrink-0 transition-colors duration-300">
+        <aside id="sidebar" class="sidebar-panel absolute md:relative z-50 w-72 md:w-80 h-full bg-[var(--bg-sidebar)] border-r border-[var(--border-color)] flex flex-col shrink-0 transition-transform duration-300 md:translate-x-0 shadow-2xl md:shadow-none">
             <!-- Search -->
             <div class="p-4 border-b border-[var(--border-color)]">
                 <div class="relative group">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-[var(--text-secondary)] text-xs group-focus-within:text-indigo-500 transition-colors"></i>
-                    <input type="text" id="search-input" placeholder="Search checklists..." 
+                    <input type="text" id="search-input" placeholder="Search checks..." 
                            class="w-full bg-[var(--bg-body)] border border-[var(--border-color)] rounded-lg py-2.5 pl-9 pr-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-[var(--text-secondary)]">
                 </div>
             </div>
             
             <!-- Checklist Tree -->
-            <div id="sidebar-container" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+            <div id="sidebar-container" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2 pb-20 md:pb-3">
                 <!-- Javascript will inject items here -->
             </div>
             
             <!-- Footer -->
-            <div class="p-3 border-t border-[var(--border-color)] text-center">
+            <div class="p-3 border-t border-[var(--border-color)] text-center bg-[var(--bg-sidebar)]">
                  <span class="text-[10px] text-[var(--text-secondary)] font-mono flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-code-branch"></i> v2025.4.0 • OWASP 2025
+                    <i class="fa-solid fa-code-branch"></i> v2025.5.0 • OWASP 2025
                  </span>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col bg-[var(--bg-body)] relative transition-colors duration-300">
+        <main class="flex-1 flex flex-col bg-[var(--bg-body)] relative transition-colors duration-300 w-full">
             
             <!-- Category Header -->
-            <div class="h-24 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)]/50 backdrop-blur-sm px-8 flex flex-col justify-center shrink-0">
+            <div class="min-h-20 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)]/80 backdrop-blur-md px-6 md:px-8 py-4 flex flex-col justify-center shrink-0 z-10 sticky top-0">
                 <div class="flex justify-between items-center">
                     <div>
                         <div class="flex items-center gap-2 mb-2">
-                            <span id="header-domain" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[var(--hover-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] uppercase tracking-wider">SELECT DOMAIN</span>
+                            <span id="header-domain" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[var(--hover-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] uppercase tracking-wider">SYSTEM READY</span>
                         </div>
-                        <h2 id="header-title" class="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Dashboard</h2>
+                        <h2 id="header-title" class="text-xl md:text-2xl font-bold text-[var(--text-primary)] tracking-tight truncate max-w-[250px] sm:max-w-md md:max-w-xl">Dashboard</h2>
                     </div>
                     <div class="text-right hidden sm:block">
-                        <div class="text-3xl font-mono font-bold text-[var(--text-primary)]" id="category-stats">0<span class="text-[var(--text-secondary)] text-xl">/0</span></div>
-                        <div class="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider font-semibold mt-1">Checks Verified</div>
+                        <div class="text-2xl md:text-3xl font-mono font-bold text-[var(--text-primary)]" id="category-stats">0<span class="text-[var(--text-secondary)] text-xl">/0</span></div>
+                        <div class="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider font-semibold mt-1">Status</div>
                     </div>
                 </div>
             </div>
 
             <!-- Tasks Area -->
-            <div id="tasks-list" class="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
-                <!-- Empty State -->
-                <div class="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] opacity-60">
-                    <div class="w-20 h-20 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center mb-6 shadow-xl">
-                        <i class="fa-solid fa-list-check text-3xl"></i>
+            <div id="tasks-list" class="flex-1 overflow-y-auto p-4 md:p-10 custom-scrollbar pb-20">
+                <!-- Professional Dashboard Animation State -->
+                <div class="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] min-h-[400px]">
+                    
+                    <!-- Animated Shield SVG -->
+                    <div class="relative w-48 h-48 mb-8">
+                        <!-- Pulse Ring 1 -->
+                        <div class="absolute inset-0 border-2 border-indigo-500/20 rounded-full animate-[ping_3s_linear_infinite]"></div>
+                        <!-- Pulse Ring 2 -->
+                        <div class="absolute inset-4 border border-indigo-500/30 rounded-full animate-[ping_3s_linear_infinite_1s]"></div>
+                        
+                        <!-- Core Shield SVG -->
+                        <svg class="w-full h-full text-indigo-600 drop-shadow-[0_0_15px_rgba(99,102,241,0.3)] animate-pulse-glow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(99, 102, 241, 0.05)"/>
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5"/>
+                            <!-- Inner Circuit Lines -->
+                            <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" class="animate-spin-slow opacity-70" style="transform-origin: center;"/>
+                            <path d="M12 12v6" class="opacity-50"/>
+                            <path d="M12 6v3" class="opacity-50"/>
+                            <path d="M6 12h3" class="opacity-50"/>
+                            <path d="M15 12h3" class="opacity-50"/>
+                        </svg>
+                        
+                        <!-- Scanning Line -->
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-400/10 to-transparent animate-scan" style="clip-path: url(#shield-clip);"></div>
                     </div>
-                    <p class="text-sm font-medium">Select a category from the sidebar to begin auditing.</p>
+
+                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-2">VAPT Command Center</h3>
+                    <p class="text-sm font-mono text-center max-w-md typing-cursor" id="typing-text"></p>
+                    
+                    <div class="mt-8 flex gap-3 opacity-0 animate-[fadeIn_1s_ease-out_1s_forwards]">
+                        <button onclick="document.querySelector('.sidebar-item').click()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-indigo-500/25">
+                            Start Assessment
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -319,26 +333,6 @@
                             "Horizontal Privilege Escalation",
                             "Forced Browsing to Admin Pages",
                             "Missing Function Level Access"
-                        ]
-                    },
-                    {
-                        title: "1.4 Input Validation",
-                        tasks: [
-                            "Reflected & Stored XSS",
-                            "SQL Injection (Blind/Error-based)",
-                            "Command Injection (OS Cmds)",
-                            "SSTI (Template Injection)",
-                            "XML External Entity (XXE)",
-                            "File Upload (RCE, Shells)"
-                        ]
-                    },
-                    {
-                        title: "1.5 Business Logic",
-                        tasks: [
-                            "Price Manipulation",
-                            "Quantity Tampering",
-                            "Workflow Bypass",
-                            "Race Conditions (Coupons/Wallet)"
                         ]
                     }
                 ]
@@ -413,15 +407,6 @@
                             "EC2 Metadata SSRF (IMDSv1)",
                             "Lambda Code Injection",
                             "Route53 Dangling DNS"
-                        ]
-                    },
-                    {
-                        title: "3.2 Azure Assessment",
-                        tasks: [
-                            "Blob Storage Exposure",
-                            "Azure AD Auth Flaws",
-                            "Key Vault Access Policies",
-                            "Automation Account Perms"
                         ]
                     }
                 ]
@@ -537,7 +522,7 @@
 
             init() {
                 try {
-                    const saved = localStorage.getItem('vapt_state_v5');
+                    const saved = localStorage.getItem('vapt_state_v6');
                     if(saved) this.state = JSON.parse(saved);
                     
                     const savedTheme = localStorage.getItem('vapt_theme');
@@ -546,6 +531,7 @@
 
                     this.renderSidebar();
                     this.updateGlobalProgress();
+                    this.startTypingEffect();
                 } catch(e) {
                     console.error("Init Error", e);
                 }
@@ -568,6 +554,19 @@
                 } else {
                     document.documentElement.classList.add('light');
                     document.documentElement.classList.remove('dark');
+                }
+            },
+
+            toggleMobileSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('mobile-overlay');
+                
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                } else {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
                 }
             },
 
@@ -638,6 +637,11 @@
                 this.activeDomainIdx = dIdx;
                 this.activeCategoryIdx = cIdx;
                 
+                // Auto Close mobile sidebar on selection
+                if(window.innerWidth < 768) {
+                    this.toggleMobileSidebar();
+                }
+
                 const domain = vaptData[dIdx];
                 const category = domain.categories[cIdx];
                 
@@ -646,9 +650,9 @@
                 titleEl.innerText = category.title;
                 
                 if(category.isOwasp) {
-                    titleEl.className = "text-2xl font-bold text-amber-400 tracking-tight drop-shadow-sm";
+                    titleEl.className = "text-xl md:text-2xl font-bold text-amber-500 tracking-tight drop-shadow-sm";
                 } else {
-                    titleEl.className = "text-2xl font-bold text-[var(--text-primary)] tracking-tight";
+                    titleEl.className = "text-xl md:text-2xl font-bold text-[var(--text-primary)] tracking-tight";
                 }
 
                 const list = document.getElementById('tasks-list');
@@ -734,24 +738,27 @@
                 }
             },
 
+            startTypingEffect() {
+                const text = "System initialized. Select a domain to begin scanning protocols...";
+                const el = document.getElementById('typing-text');
+                if(!el) return;
+                let i = 0;
+                const interval = setInterval(() => {
+                    el.innerText += text.charAt(i);
+                    i++;
+                    if(i >= text.length) clearInterval(interval);
+                }, 50);
+            },
+
             save() {
-                localStorage.setItem('vapt_state_v5', JSON.stringify(this.state));
+                localStorage.setItem('vapt_state_v6', JSON.stringify(this.state));
             },
 
             resetData() {
                 if(confirm("Are you sure you want to clear all progress?")) {
                     this.state = {};
                     this.save();
-                    this.init();
-                    document.getElementById('tasks-list').innerHTML = `
-                        <div class="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] opacity-60">
-                            <div class="w-20 h-20 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center mb-6 shadow-xl">
-                                <i class="fa-solid fa-list-check text-3xl"></i>
-                            </div>
-                            <p class="text-sm font-medium">Data reset. Select a category to start.</p>
-                        </div>`;
-                    document.getElementById('header-title').innerText = "Dashboard";
-                    document.getElementById('category-stats').innerHTML = "0<span class='text-[var(--text-secondary)] text-xl'>/0</span>";
+                    location.reload(); // Hard reload to reset UI to default state
                 }
             }
         };
