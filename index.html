@@ -818,89 +818,173 @@
                     {
                         title: "2.1 API Reconnaissance",
                         tasks: [
-                            "Endpoint enumeration (Brute-force)",
-                            "Docs discovery (Swagger, OpenAPI, RAML)",
-                            "API Versioning enumeration",
-                            "GraphQL/SOAP/WebSocket discovery",
-                            "Method mapping / Parameter discovery",
-                            "Postman collection discovery"
+        "API endpoint enumeration via directory brute-forcing",
+        "API documentation discovery (Swagger, OpenAPI, RAML)",
+        "API versioning enumeration (v1, v2, v3)",
+        "GraphQL endpoint discovery",
+        "SOAP endpoint discovery",
+        "WebSocket endpoint identification",
+        "gRPC service discovery",
+        "REST API endpoint mapping",
+        "API gateway identification",
+        "Rate limiting detection",
+        "API authentication mechanisms identified",
+        "API response analysis for hidden endpoints",
+        "JavaScript file analysis for API calls",
+        "Mobile app traffic analysis for API endpoints",
+        "API parameter discovery (Arjun, ParamMiner)",
+        "Postman collection discovery",
+        "Insomnia workspace discovery"
                         ]
                     },
                     {
                         title: "2.2 API Auth & AuthZ",
                         tasks: [
-                            "API Key Security / Leakage",
-                            "JWT Analysis (Algo, Secret, Expiry)",
-                            "OAuth 2.0 Flaws / Token Leakage",
-                            "BOLA/IDOR Checks",
-                            "BFLA / Privilege Escalation",
-                            "Missing Auth on sensitive endpoints"
+        "API key authentication security",
+        "API key transmission (header vs query parameter)",
+        "API key rotation mechanism",
+        "Bearer token authentication",
+        "JWT token security (algorithm, signature verification)",
+        "JWT weak secret brute-forcing",
+        "JWT algorithm confusion (RS256 to HS256)",
+        "JWT none algorithm acceptance",
+        "JWT token expiration enforcement",
+        "OAuth 2.0 implementation flaws",
+        "OAuth token leakage",
+        "OAuth redirect_uri validation",
+        "OAuth state parameter validation",
+        "OAuth scope escalation",
+        "API key exposure in public repositories",
+        "Broken Object Level Authorization (BOLA/IDOR)",
+        "Broken Function Level Authorization",
+        "Missing authentication on sensitive endpoints",
+        "Privilege escalation in API calls",
+        "API key reuse across different privilege levels"
                         ]
                     },
                     {
                         title: "2.3 REST API Security",
                         tasks: [
-                            "HTTP Method Tampering",
-                            "Mass Assignment / Excessive Data Exposure",
-                            "Parameter Pollution",
-                            "HTTP Verb Tunneling",
-                            "Insecure Deserialization",
-                            "Injection Attacks (SQLi, NoSQLi, XXE)"
+        "HTTP method tampering (POST to GET, etc.)",
+        "Unrestricted HTTP methods (PUT, DELETE, PATCH)",
+        "Mass assignment vulnerabilities",
+        "Excessive data exposure in API responses",
+        "Parameter pollution attacks",
+        "API versioning security issues",
+        "Lack of resource rate limiting",
+        "Broken object-level authorization",
+        "Sensitive data in URL parameters",
+        "HTTP verb tunneling",
+        "API response manipulation",
+        "Insecure deserialization in APIs",
+        "XML external entity (XXE) in REST APIs",
+        "SQL injection in API parameters",
+        "NoSQL injection in API queries",
+        "SSRF via API endpoints",
+        "Business logic flaws in API workflows",
+        "Insufficient logging and monitoring"
                         ]
                     },
                     {
                         title: "2.4 GraphQL Security",
                         tasks: [
-                            "Introspection Query Enabled",
-                            "Query Depth/Complexity Limits (DoS)",
-                            "Batching/Circular Query Attacks",
-                            "Field Suggestion / Auth Bypass",
-                            "GraphQL Injection / Mutation Flaws"
+        "GraphQL introspection enabled in production",
+        "GraphQL query depth/complexity limits",
+        "GraphQL batching attacks",
+        "GraphQL field suggestion attacks",
+        "GraphQL circular query attacks",
+        "Authorization bypass in GraphQL resolvers",
+        "Information disclosure via GraphQL errors",
+        "GraphQL injection attacks",
+        "Insecure direct object references in GraphQL",
+        "GraphQL schema exploration",
+        "Denial of Service via recursive queries",
+        "Missing query cost analysis",
+        "GraphQL mutation testing for privilege escalation",
+        "GraphQL subscription security",
+        "CSRF in GraphQL mutations"
                         ]
                     },
                     {
                         title: "2.5 Rate Limiting & DoS",
                         tasks: [
-                            "Rate limit bypass techniques",
-                            "Resource exhaustion / Large payloads",
-                            "Regex DoS (ReDoS)",
-                            "Algorithmic complexity attacks"
+        "API rate limiting implementation",
+        "Rate limit bypass techniques",
+        "Distributed rate limiting validation",
+        "Resource exhaustion attacks",
+        "Regex DoS (ReDoS) in input validation",
+        "Algorithmic complexity attacks",
+        "Large payload handling",
+        "Slowloris-style attacks on APIs",
+        "Application-level DoS via expensive operations",
+        "Rate limiting on authentication endpoints",
+        "Rate limiting on password reset",
+        "Rate limiting on OTP generation"
                         ]
                     },
                     {
                         title: "2.6 API Data Validation",
                         tasks: [
-                            "Input validation / Content-Type check",
-                            "XML/JSON Injection",
-                            "Prototype Pollution",
-                            "Integer Overflow / Type Mismatch"
+        "Input validation on all API parameters",
+        "Content-Type validation",
+        "Accept header manipulation",
+        "XML injection in SOAP APIs",
+        "JSON injection attacks",
+        "YAML deserialization vulnerabilities",
+        "Prototype pollution in JSON",
+        "Integer overflow in numeric parameters",
+        "Array/object size limits",
+        "Unicode normalization issues",
+        "Null byte injection",
+        "CRLF injection in API responses",
+        "Server-side validation vs client-side only"
                         ]
                     },
                     {
                         title: "2.7 SOAP & XML Services",
                         tasks: [
-                            "WSDL Analysis",
-                            "XML Bomb / XXE",
-                            "SOAP Action Spoofing",
-                            "SAML Injection"
+        "WSDL disclosure and analysis",
+        "SOAP injection attacks",
+        "XML bomb (billion laughs attack)",
+        "XML external entity (XXE) in SOAP",
+        "WS-Security header manipulation",
+        "SOAP action spoofing",
+        "WS-Addressing vulnerabilities",
+        "SAML assertion injection",
+        "XML signature wrapping attacks",
+        "Replay attacks on SOAP messages"
                         ]
                     },
                     {
                         title: "2.8 Misconfigurations",
                         tasks: [
-                            "CORS Wildcard / Credentials",
-                            "Verbose Errors / Stack Traces",
-                            "Unnecessary Methods Enabled",
-                            "Missing TLS / Security Headers"
+        "CORS misconfiguration (wildcard origins)",
+        "CORS with credentials enabled insecurely",
+        "Missing security headers in API responses",
+        "Verbose error messages exposing internals",
+        "Stack traces in API error responses",
+        "Debug endpoints accessible in production",
+        "API documentation accessible publicly",
+        "Unnecessary HTTP methods enabled",
+        "Default API credentials not changed",
+        "Insecure API gateway configuration",
+        "Missing TLS/HTTPS enforcement",
+        "Certificate validation disabled"
                         ]
                     },
                     {
                         title: "2.9 API Business Logic",
                         tasks: [
-                            "Race Conditions",
-                            "Idempotency Issues",
-                            "Transaction Replay",
-                            "Order of Operations Bypass"
+        "Race conditions in API transactions",
+        "Time-of-check to time-of-use (TOCTOU) flaws",
+        "Idempotency issues in API calls",
+        "Transaction replay attacks",
+        "Order of operations bypass",
+        "State manipulation in multi-step processes",
+        "Insufficient anti-automation controls",
+        "Payment logic vulnerabilities",
+        "Refund process abuse",
+        "Inventory manipulation via API"
                         ]
                     }
                 ]
