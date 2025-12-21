@@ -82,7 +82,7 @@
             transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
             max-height: 0; opacity: 0; overflow: hidden;
         }
-        .accordion-content.open { max-height: 5000px; opacity: 1; }
+        .accordion-content.open { max-height: 8000px; opacity: 1; }
 
         .custom-checkbox {
             appearance: none; width: 1.25rem; height: 1.25rem;
@@ -91,6 +91,7 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex; align-items: center; justify-content: center;
         }
+        .custom-checkbox:hover { border-color: var(--accent-color); }
         .custom-checkbox:checked {
             background-color: var(--checkbox-checked); border-color: var(--checkbox-checked);
             background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
@@ -124,14 +125,12 @@
 
         /* Mobile Sidebar Transitions */
         .mobile-sidebar-overlay {
-            transition: opacity 0.3s ease;
-            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease; opacity: 0; pointer-events: none;
         }
         .mobile-sidebar-overlay.active { opacity: 1; pointer-events: auto; }
         
         .sidebar-panel {
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out; transform: translateX(-100%);
         }
         .sidebar-panel.active { transform: translateX(0); }
 
@@ -164,7 +163,7 @@
         <div class="flex items-center gap-3 md:gap-6">
             <div class="hidden lg:flex flex-col items-end">
                 <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium">
-                    <span>Coverage</span>
+                    <span>Audit Coverage</span>
                     <span id="global-percent" class="text-indigo-500 font-mono font-bold text-sm">0%</span>
                 </div>
                 <div class="w-32 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
@@ -211,7 +210,7 @@
             <!-- Footer -->
             <div class="p-3 border-t border-[var(--border-color)] text-center bg-[var(--bg-sidebar)]">
                  <span class="text-[10px] text-[var(--text-secondary)] font-mono flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-code-branch"></i> v2025.5.0 • OWASP 2025
+                    <i class="fa-solid fa-code-branch"></i> v2025.6.0 • OWASP 2025
                  </span>
             </div>
         </aside>
@@ -242,24 +241,17 @@
                     
                     <!-- Animated Shield SVG -->
                     <div class="relative w-48 h-48 mb-8">
-                        <!-- Pulse Ring 1 -->
                         <div class="absolute inset-0 border-2 border-indigo-500/20 rounded-full animate-[ping_3s_linear_infinite]"></div>
-                        <!-- Pulse Ring 2 -->
                         <div class="absolute inset-4 border border-indigo-500/30 rounded-full animate-[ping_3s_linear_infinite_1s]"></div>
-                        
-                        <!-- Core Shield SVG -->
                         <svg class="w-full h-full text-indigo-600 drop-shadow-[0_0_15px_rgba(99,102,241,0.3)] animate-pulse-glow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(99, 102, 241, 0.05)"/>
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5"/>
-                            <!-- Inner Circuit Lines -->
                             <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" class="animate-spin-slow opacity-70" style="transform-origin: center;"/>
                             <path d="M12 12v6" class="opacity-50"/>
                             <path d="M12 6v3" class="opacity-50"/>
                             <path d="M6 12h3" class="opacity-50"/>
                             <path d="M15 12h3" class="opacity-50"/>
                         </svg>
-                        
-                        <!-- Scanning Line -->
                         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-400/10 to-transparent animate-scan" style="clip-path: url(#shield-clip);"></div>
                     </div>
 
@@ -279,586 +271,549 @@
 
     <!-- Initialization Script -->
     <script>
-        // --- DATA SOURCE ---
+        // --- DATA SOURCE: Massive VAPT List ---
         const vaptData = [
             {
-                title: "1. Web Application",
+                title: "1. Web Application Security",
                 icon: "fa-globe",
                 categories: [
                     {
-                        title: "★ OWASP Top 10 (2025)",
+                        title: "★ OWASP Web Top 10 (2025)",
                         isOwasp: true,
                         tasks: [
-                            "A01: Broken Access Control (IDOR, PrivEsc)",
-                            "A02: Cryptographic Failures (Sensitive Data)",
-                            "A03: Injection (SQLi, XSS, Cmd Inj)",
-                            "A04: Insecure Design (Logic Flaws)",
-                            "A05: Security Misconfiguration",
-                            "A06: Vuln & Outdated Components",
-                            "A07: Ident & Auth Failures (Brute Force)",
+                            "A01: Broken Access Control (IDOR, PrivEsc, CORS)",
+                            "A02: Cryptographic Failures (Sensitive Data Exposure)",
+                            "A03: Injection (SQLi, XSS, Command Injection)",
+                            "A04: Insecure Design (Business Logic Flaws)",
+                            "A05: Security Misconfiguration (Default Creds, XML)",
+                            "A06: Vulnerable & Outdated Components",
+                            "A07: Identification & Auth Failures (Brute Force)",
                             "A08: Software & Data Integrity Failures",
-                            "A09: Logging & Monitoring Failures",
-                            "A10: SSRF (Server-Side Request Forgery)"
-                        ]
-                    },
-                     {
-      title: "1.1 Pre-Engagement Phase",
-      tasks: [
-        "Scope definition documented (URLs, IPs, domains, subdomains)",
-        "Authorization letter obtained and verified",
-        "Rules of Engagement (RoE) signed by both parties",
-        "Primary and secondary contacts identified",
-        "Testing window scheduled (date, time, timezone)",
-        "Emergency escalation procedure documented",
-        "Backup and rollback procedures agreed",
-        "Testing methodology approved (Black/Gray/White box)",
-        "Non-Disclosure Agreement (NDA) executed",
-        "Target environment confirmed (Production/Staging/UAT)",
-        "Communication channels established",
-        "Out-of-scope items clearly listed",
-        "Legal compliance verified (GDPR, HIPAA, PCI-DSS)",
-        "Penetration testing insurance confirmed",
-        "Success criteria and deliverables defined"
-      ]
-    },
-
-    {
-      title: "1.2 Information Gathering - Passive Reconnaissance",
-      tasks: [
-        "Subdomain enumeration (Subfinder, Amass, Assetfinder, crt.sh)",
-        "DNS records analyzed (A, AAAA, MX, TXT, CNAME, NS, SOA)",
-        "WHOIS information retrieved and analyzed",
-        "Shodan.io search for exposed services",
-        "Censys.io infrastructure mapping",
-        "Wayback Machine historical data analysis",
-        "Google dorking (site:, inurl:, filetype:, intitle:)",
-        "GitHub/GitLab repository searches for leaked credentials",
-        "Pastebin/Trello/Confluence public data searches",
-        "SSL/TLS certificate transparency logs (crt.sh)",
-        "Email addresses harvested (theHarvester, Hunter.io)",
-        "Technology stack fingerprinting (Wappalyzer, BuiltWith)",
-        "Employee information from LinkedIn/social media",
-        "Job postings analysis for technology insights",
-        "Acquisitions and subsidiary identification",
-        "Domain registrar and hosting provider identified",
-        "ASN and IP range identification",
-        "Breach database searches (HaveIBeenPwned)",
-        "Public cloud storage enumeration (S3, Azure Blob)",
-        "Certificate Subject Alternative Names (SANs) collected"
-      ]
-    },
-
-    {
-      title: "1.3 Information Gathering - Active Reconnaissance",
-      tasks: [
-        "Full TCP port scan (nmap -p- -sS -sV -sC -O -A)",
-        "UDP port scan for critical services",
-        "Service version detection and fingerprinting",
-        "Operating system detection and fingerprinting",
-        "Banner grabbing for all open services",
-        "Directory and file brute-forcing (ffuf, gobuster, dirb)",
-        "Virtual host discovery and enumeration",
-        "Reverse DNS lookup performed",
-        "Network range identification",
-        "Load balancer detection (lbd)",
-        "WAF/IPS/IDS detection (wafw00f, nmap scripts)",
-        "CDN identification (CloudFlare, Akamai, Fastly)",
-        "Backup file discovery (.bak, .old, .swp, ~)",
-        "Hidden parameter discovery (Arjun, ParamSpider)",
-        "JavaScript file analysis for endpoints",
-        "API endpoint enumeration (Kiterunner)",
-        "Rate limiting and throttling detection",
-        "SSL/TLS configuration testing (testssl.sh)",
-        "HTTP methods testing (OPTIONS, TRACE, PUT, DELETE)",
-        "Robots.txt and sitemap.xml analysis"
-      ]
-    },
-
-    {
-      title: "1.4 Authentication Testing",
-      tasks: [
-        "Default credentials tested (admin/admin, root/toor, test/test)",
-        "Common credential pairs from SecLists",
-        "Weak password policy validation",
-        "Username enumeration via login error messages",
-        "Username enumeration via registration form",
-        "Username enumeration via password reset",
-        "Username enumeration via account recovery",
-        "Username enumeration via timing attacks",
-        "Brute force protection mechanism validation",
-        "Account lockout policy testing",
-        "Password reset token predictability analysis",
-        "Password reset token expiration testing",
-        "Password reset link single-use enforcement",
-        "Session fixation vulnerability testing",
-        "CSRF in login functionality",
-        "Clickjacking on login page",
-        "Multi-factor authentication (MFA) bypass attempts",
-        "MFA code brute-forcing possibility",
-        "MFA backup codes security",
-        "OAuth 2.0 implementation vulnerabilities",
-        "OpenID Connect security issues",
-        "SAML assertion manipulation",
-        "JWT token security (algorithm confusion, none algorithm)",
-        "Remember me functionality security",
-        "Logout functionality and session invalidation",
-        "Concurrent session handling",
-        "Password change without current password",
-        "Captcha implementation and bypass",
-        "Rate limiting on authentication endpoints",
-        "Credential stuffing vulnerability",
-        "Password spraying feasibility"
-      ]
-    },
-
-    {
-      title: "1.5 Session Management",
-      tasks: [
-        "Session token entropy and randomness analysis",
-        "Session token predictability testing",
-        "Session fixation attacks",
-        "Session timeout configuration (idle and absolute)",
-        "Cookie security attributes (Secure, HttpOnly, SameSite)",
-        "Session token in URL parameter",
-        "Session token in referrer header",
-        "Session token in browser history",
-        "Concurrent session management",
-        "Session regeneration after authentication",
-        "Session regeneration after privilege escalation",
-        "Session invalidation on logout",
-        "Session reuse after logout",
-        "Session token scope (domain and path)",
-        "Cross-subdomain session sharing",
-        "Session token exposure in logs",
-        "Persistent session security (Remember Me)",
-        "Session puzzling attacks",
-        "Cookie tossing vulnerability",
-        "Cookie injection attacks"
-      ]
-    },
-
-    {
-      title: "1.6 Authorization & Access Control",
-      tasks: [
-        "Horizontal privilege escalation (User A → User B data)",
-        "Vertical privilege escalation (User → Admin)",
-        "Insecure Direct Object References (IDOR) - all parameters",
-        "IDOR in API endpoints",
-        "IDOR in file download/upload",
-        "Missing function-level access control",
-        "Parameter tampering (user_id, role, admin flags)",
-        "Forced browsing to administrative interfaces",
-        "Path traversal in URL parameters",
-        "API endpoints accessible without authentication",
-        "GraphQL authorization bypass",
-        "JWT token manipulation (alg:none, weak secret)",
-        "JWT token expiration not enforced",
-        "Role-Based Access Control (RBAC) flaws",
-        "Attribute-Based Access Control (ABAC) issues",
-        "Hidden administrative functionality discovery",
-        "Client-side access control bypass",
-        "Direct access to restricted resources",
-        "Privilege escalation via parameter pollution",
-        "Mass assignment vulnerabilities",
-        "Object-level authorization missing",
-        "Function-level authorization missing",
-        "Broken access control in microservices"
-      ]
-  {
-      title: "1.7 SQL Injection",
-      tasks: [
-        "SQLi in login form (username field)",
-        "SQLi in login form (password field)",
-        "SQLi in search functionality",
-        "SQLi in URL GET parameters",
-        "SQLi in POST request body",
-        "SQLi in Cookie values",
-        "SQLi in HTTP headers (User-Agent, Referer, X-Forwarded-For)",
-        "SQLi in JSON input fields",
-        "SQLi in XML input fields",
-        "SQLi in hidden form fields",
-        "SQLi in file upload filename parameter",
-        "SQLi in sorting parameters (ORDER BY)",
-        "SQLi in filtering parameters (WHERE clause)",
-        "SQLi in pagination parameters",
-        "Error-based SQL injection",
-        "Union-based SQL injection",
-        "Boolean-based blind SQL injection",
-        "Time-based blind SQL injection",
-        "Out-of-band SQL injection (DNS/HTTP)",
-        "Second-order SQL injection",
-        "Stored procedure SQL injection",
-        "ORM injection (Hibernate, Entity Framework)",
-        "NoSQL injection (MongoDB, CouchDB)",
-        "SQL injection in API endpoints",
-        "SQL injection via XML External Entity (XXE)",
-        "Database fingerprinting (MySQL, PostgreSQL, MSSQL, Oracle)",
-        "Privilege escalation via SQL injection",
-        "File read via SQL injection (LOAD_FILE)",
-        "File write via SQL injection (INTO OUTFILE)",
-        "OS command execution via SQL injection (xp_cmdshell)"
-      ]
-    },
-
-    {
-      title: "1.8 Cross-Site Scripting (XSS)",
-      tasks: [
-        "Reflected XSS in all input fields",
-        "Reflected XSS in URL parameters",
-        "Reflected XSS in HTTP headers",
-        "Stored XSS in user profiles",
-        "Stored XSS in comments sections",
-        "Stored XSS in messaging systems",
-        "Stored XSS in file upload metadata",
-        "DOM-based XSS via client-side scripts",
-        "DOM-based XSS via URL fragments",
-        "XSS in error messages and exceptions",
-        "XSS in JSON responses",
-        "XSS in XML responses",
-        "XSS via SVG file upload",
-        "XSS via HTML file upload",
-        "XSS in PDF generation functionality",
-        "XSS in email templates",
-        "XSS in Rich Text Editors (TinyMCE, CKEditor)",
-        "XSS via JavaScript: protocol",
-        "XSS via data: URI scheme",
-        "XSS filter bypass using encoding",
-        "XSS filter bypass using obfuscation",
-        "Content Security Policy (CSP) bypass",
-        "CSP misconfiguration (unsafe-inline, unsafe-eval)",
-        "Mutation XSS (mXSS)",
-        "Self-XSS exploitation scenarios",
-        "XSS to account takeover chain",
-        "XSS to CSRF token theft",
-        "XSS to session hijacking",
-        "XSS in AngularJS/React/Vue templates",
-        "XSS via polyglot payloads"
-      ]
-    },
-
-    {
-      title: "1.9 Command Injection",
-      tasks: [
-        "OS command injection in all user inputs",
-        "Command injection in file processing",
-        "Command injection in image manipulation",
-        "Command injection in PDF generation",
-        "Command injection in email functionality",
-        "Command injection via file upload",
-        "Blind command injection using time delays",
-        "Blind command injection using out-of-band (OOB)",
-        "Command injection via shell metacharacters",
-        "Command substitution using backticks or $()",
-        "Path traversal combined with command injection",
-        "Argument injection vulnerabilities",
-        "Environment variable injection",
-        "Code injection (Python eval, PHP system)",
-        "Template injection leading to RCE",
-        "Expression Language (EL) injection",
-        "OGNL injection (Struts)",
-        "SSTI (Server-Side Template Injection)"
-      ]
-    },
-
-    {
-      title: "1.10 XML External Entity (XXE)",
-      tasks: [
-        "XXE in XML parsers",
-        "XXE in SOAP API requests",
-        "XXE in file upload (SVG, DOCX, XLSX, PPTX)",
-        "XXE in RSS/Atom feeds",
-        "XXE for local file disclosure",
-        "XXE for SSRF attacks",
-        "XXE for port scanning",
-        "XXE for Denial of Service",
-        "Blind XXE using out-of-band techniques",
-        "Blind XXE using error messages",
-        "XXE via XInclude attacks",
-        "XXE via parameter entities",
-        "XXE via DTD (Document Type Definition)",
-        "XXE in SAML assertions",
-        "XXE in SOAP web services",
-        "XXE parser configuration testing"
-      ]
-    },
-
-    {
-      title: "1.11 Server-Side Request Forgery (SSRF)",
-      tasks: [
-        "SSRF via URL input fields",
-        "SSRF via file import from URL",
-        "SSRF via webhook configurations",
-        "SSRF via PDF generation from URL",
-        "SSRF in image processing from URL",
-        "SSRF in API integrations",
-        "SSRF to access cloud metadata (169.254.169.254)",
-        "SSRF to access internal services (localhost, 127.0.0.1)",
-        "SSRF to internal network scanning",
-        "SSRF to bypass firewall restrictions",
-        "SSRF via protocol smuggling (file://, gopher://, dict://)",
-        "SSRF via DNS rebinding",
-        "Blind SSRF via external interactions",
-        "Blind SSRF via timing analysis",
-        "SSRF in email header injection",
-        "SSRF to read local files",
-        "SSRF combined with CRLF injection",
-        "SSRF filter bypass techniques",
-        "SSRF via IPv6 addresses",
-        "SSRF via URL encoding/obfuscation"
-      ]
-  {
-      title: "1.12 File Upload Vulnerabilities",
-      tasks: [
-        "Unrestricted file upload (web shell)",
-        "File type restriction bypass (MIME type spoofing)",
-        "Extension blacklist bypass (.php5, .phtml, .phar)",
-        "Double extension attack (shell.php.jpg)",
-        "Null byte injection (shell.php%00.jpg)",
-        "Content-Type header manipulation",
-        "Magic bytes/file signature manipulation",
-        "Path traversal in filename (../../shell.php)",
-        "Filename manipulation attacks",
-        "Large file upload for DoS",
-        "Malicious file content (XXE in XML/SVG)",
-        "XSS via SVG file upload",
-        "Polyglot file upload (JPG+PHP)",
-        "Zip slip vulnerability",
-        "Archive extraction vulnerabilities",
-        "Image processing vulnerabilities (ImageMagick)",
-        "EXIF metadata exploitation",
-        "File overwrite vulnerabilities",
-        "Race condition in file upload",
-        "Upload without authentication",
-        "Upload directory listing enabled",
-        "Predictable upload directory",
-        "Direct access to uploaded files"
-      ]
-    },
-
-    {
-      title: "1.13 Business Logic Flaws",
-      tasks: [
-        "Price manipulation (negative values, decimal overflow)",
-        "Quantity manipulation (integer overflow)",
-        "Currency manipulation in payments",
-        "Discount code reuse and stacking",
-        "Referral code abuse",
-        "Coupon code brute-forcing",
-        "Race conditions in payment processing",
-        "Race conditions in voting/rating systems",
-        "Race conditions in limited quantity purchases",
-        "Multi-step process bypass (checkout without payment)",
-        "Workflow state manipulation",
-        "Parameter pollution attacks",
-        "Time-based logic flaws (auction sniping)",
-        "Captcha reuse and bypass",
-        "OTP reuse and brute-forcing",
-        "Email verification bypass",
-        "Phone verification bypass",
-        "Free trial abuse mechanisms",
-        "Subscription cancellation bypass",
-        "Refund/chargeback logic abuse",
-        "Inventory manipulation",
-        "Loyalty points manipulation",
-        "Gift card/voucher logic flaws",
-        "2FA/MFA enrollment bypass",
-        "Account recovery abuse",
-        "Feature unlocking without payment",
-        "Download limit bypass",
-        "API rate limit bypass"
-      ]
-    },
-
-    {
-      title: "1.14 Cross-Site Request Forgery (CSRF)",
-      tasks: [
-        "CSRF token absence in state-changing requests",
-        "CSRF token validation bypass",
-        "CSRF token reuse across sessions",
-        "CSRF token predictability",
-        "CSRF via GET method",
-        "CSRF via POST method",
-        "CSRF in JSON requests",
-        "CSRF in file upload",
-        "CSRF in account settings change",
-        "CSRF in password change",
-        "CSRF in email change",
-        "CSRF in profile update",
-        "CSRF in account deletion",
-        "CSRF in privilege escalation",
-        "CSRF in logout functionality",
-        "SameSite cookie attribute validation",
-        "CSRF via XSS exploitation",
-        "Clickjacking combined with CSRF",
-        "Type juggling in CSRF tokens",
-        "Origin/Referer header bypass"
-      ]
-    },
-
-    {
-      title: "1.15 Cryptographic Failures",
-      tasks: [
-        "Weak SSL/TLS configuration (SSLLabs A+ rating)",
-        "Support for TLS 1.0/1.1 (deprecated)",
-        "Weak cipher suites (RC4, DES, 3DES)",
-        "Missing HSTS header",
-        "HSTS with insufficient max-age",
-        "Missing HSTS preload directive",
-        "Certificate validation issues",
-        "Self-signed certificates in production",
-        "Certificate chain validation",
-        "Weak hashing algorithms (MD5, SHA1)",
-        "Sensitive data transmitted over HTTP",
-        "Mixed content issues (HTTPS page loading HTTP)",
-        "Hardcoded cryptographic keys",
-        "Hardcoded passwords/secrets in code",
-        "Predictable random number generation",
-        "Weak encryption algorithms (DES, RC4)",
-        "ECB mode usage (electronic codebook)",
-        "Insecure key storage mechanisms",
-        "Padding oracle vulnerabilities",
-        "SSL/TLS downgrade attacks (POODLE, BEAST)",
-        "Heartbleed vulnerability (CVE-2014-0160)",
-        "Weak password hashing (MD5, plain text)",
-        "Missing salt in password hashing",
-        "Insufficient key length (RSA < 2048 bits)",
-        "Insecure random token generation"
-      ]
-    },
-
-    {
-      title: "1.16 Information Disclosure",
-      tasks: [
-        "Verbose error messages revealing stack traces",
-        "Database error messages exposed",
-        "Debug mode enabled in production",
-        "Server information in headers (X-Powered-By, Server)",
-        "Version disclosure in HTTP headers",
-        "Directory listing enabled",
-        "Backup files accessible (.bak, .old, .tmp, .swp, ~)",
-        "Version control directories (.git, .svn, .hg)",
-        "Configuration files exposed (.env, web.config, config.php)",
-        "Database backup files accessible (.sql, .db)",
-        "Source code disclosure",
-        "API documentation publicly accessible",
-        "Swagger/OpenAPI specs exposed",
-        "GraphQL introspection enabled",
-        "Comments in HTML source revealing sensitive info",
-        "JavaScript source maps exposed (.map files)",
-        "Sensitive data in JavaScript variables",
-        "robots.txt revealing hidden directories",
-        ".DS_Store files exposed (macOS)",
-        "Thumbs.db files exposed (Windows)",
-        "Application logs accessible",
-        "phpinfo() page accessible",
-        "Test/staging environments accessible",
-        "Internal IP addresses disclosed",
-        "Email addresses in source code",
-        "API keys/tokens in client-side code",
-        "Metadata in uploaded files",
-        "Sensitive data in URL parameters",
-        "Sensitive data in referrer header"
-      ]
-    },
-
-    {
-      title: "1.17 Security Headers",
-      tasks: [
-        "X-Frame-Options missing or misconfigured",
-        "X-Content-Type-Options: nosniff missing",
-        "X-XSS-Protection header configuration",
-        "Content-Security-Policy (CSP) missing",
-        "CSP with unsafe-inline directive",
-        "CSP with unsafe-eval directive",
-        "CSP with wildcard sources",
-        "Strict-Transport-Security (HSTS) missing",
-        "HSTS with short max-age value",
-        "HSTS includeSubDomains directive missing",
-        "HSTS preload directive missing",
-        "Referrer-Policy missing or insecure",
-        "Permissions-Policy (formerly Feature-Policy)",
-        "Cross-Origin-Embedder-Policy (COEP)",
-        "Cross-Origin-Opener-Policy (COOP)",
-        "Cross-Origin-Resource-Policy (CORP)",
-        "Clear-Site-Data header on logout",
-        "Cache-Control headers for sensitive data",
-        "X-Permitted-Cross-Domain-Policies",
-        "Expect-CT header configuration"
-      ]
-    },
-
-    {
-      title: "1.18 Client-Side Security",
-      tasks: [
-        "Sensitive data in localStorage",
-        "Sensitive data in sessionStorage",
-        "Sensitive data in IndexedDB",
-        "JWT tokens in localStorage (vs httpOnly cookies)",
-        "API keys exposed in client-side code",
-        "Credentials hardcoded in JavaScript",
-        "Source map files accessible",
-        "Console.log statements with sensitive data",
-        "Client-side validation bypass",
-        "JavaScript prototype pollution",
-        "DOM clobbering vulnerabilities",
-        "PostMessage vulnerabilities",
-        "WebSocket security issues",
-        "CORS misconfiguration",
-        "CORS with wildcard origin (*)",
-        "CORS with credentials enabled insecurely",
-        "Subresource Integrity (SRI) missing",
-        "CSP for inline scripts",
-        "Clickjacking vulnerabilities",
-        "Tabnabbing attacks (target=_blank without rel=noopener)",
-        "Open redirect in client-side routing"
-      ]
-    }
-    ]
-    },
-            {
-                title: "2. API Security",
-                icon: "fa-server",
-                categories: [
-                    {
-                        title: "★ OWASP API Top 10",
-                        isOwasp: true,
-                        tasks: [
-                            "API1: BOLA (Broken Object Level Auth)",
-                            "API2: Broken Authentication",
-                            "API3: BOPLA (Object Property Auth)",
-                            "API4: Unrestricted Resource Consumption",
-                            "API5: BFLA (Function Level Auth)",
-                            "API6: Unrestricted Access to Flows",
-                            "API7: SSRF in API",
-                            "API8: Security Misconfiguration",
-                            "API9: Improper Inventory",
-                            "API10: Unsafe Consumption"
+                            "A09: Security Logging & Monitoring Failures",
+                            "A10: Server-Side Request Forgery (SSRF)"
                         ]
                     },
                     {
-                        title: "2.1 REST API Checks",
+                        title: "1.1 Pre-Engagement Phase",
                         tasks: [
-                            "HTTP Method Tampering",
-                            "Mass Assignment (JSON Pollution)",
-                            "Content-Type Spoofing",
-                            "Improper Error Handling",
-                            "JWT Token Analysis"
+                            "Scope definition documented (URLs, IPs, domains, subdomains)",
+                            "Authorization letter obtained and verified",
+                            "Rules of Engagement (RoE) signed by both parties",
+                            "Primary and secondary contacts identified",
+                            "Testing window scheduled (date, time, timezone)",
+                            "Emergency escalation procedure documented",
+                            "Backup and rollback procedures agreed",
+                            "Testing methodology approved (Black/Gray/White box)",
+                            "Non-Disclosure Agreement (NDA) executed",
+                            "Target environment confirmed (Production/Staging/UAT)",
+                            "Communication channels established",
+                            "Out-of-scope items clearly listed",
+                            "Legal compliance verified (GDPR, HIPAA, PCI-DSS)",
+                            "Penetration testing insurance confirmed",
+                            "Success criteria and deliverables defined"
                         ]
                     },
                     {
-                        title: "2.2 GraphQL Checks",
+                        title: "1.2 Passive Reconnaissance",
                         tasks: [
-                            "Introspection Query Enabled",
-                            "Query Depth/Complexity DoS",
-                            "Batching Attacks",
-                            "Field Suggestion Abuse",
-                            "Resolver Authorization Bypass"
+                            "Subdomain enumeration (Subfinder, Amass, Assetfinder, crt.sh)",
+                            "DNS records analyzed (A, AAAA, MX, TXT, CNAME, NS, SOA)",
+                            "WHOIS information retrieved and analyzed",
+                            "Shodan.io search for exposed services",
+                            "Censys.io infrastructure mapping",
+                            "Wayback Machine historical data analysis",
+                            "Google dorking (site:, inurl:, filetype:, intitle:)",
+                            "GitHub/GitLab repository searches for leaked credentials",
+                            "Pastebin/Trello/Confluence public data searches",
+                            "SSL/TLS certificate transparency logs (crt.sh)",
+                            "Email addresses harvested (theHarvester, Hunter.io)",
+                            "Technology stack fingerprinting (Wappalyzer, BuiltWith)",
+                            "Employee information from LinkedIn/social media",
+                            "Job postings analysis for technology insights",
+                            "Acquisitions and subsidiary identification",
+                            "Domain registrar and hosting provider identified",
+                            "ASN and IP range identification",
+                            "Breach database searches (HaveIBeenPwned)",
+                            "Public cloud storage enumeration (S3, Azure Blob)",
+                            "Certificate Subject Alternative Names (SANs) collected"
+                        ]
+                    },
+                    {
+                        title: "1.3 Active Reconnaissance",
+                        tasks: [
+                            "Full TCP port scan (nmap -p- -sS -sV -sC -O -A)",
+                            "UDP port scan for critical services",
+                            "Service version detection and fingerprinting",
+                            "Operating system detection and fingerprinting",
+                            "Banner grabbing for all open services",
+                            "Directory and file brute-forcing (ffuf, gobuster, dirb)",
+                            "Virtual host discovery and enumeration",
+                            "Reverse DNS lookup performed",
+                            "Network range identification",
+                            "Load balancer detection (lbd)",
+                            "WAF/IPS/IDS detection (wafw00f, nmap scripts)",
+                            "CDN identification (CloudFlare, Akamai, Fastly)",
+                            "Backup file discovery (.bak, .old, .swp, ~)",
+                            "Hidden parameter discovery (Arjun, ParamSpider)",
+                            "JavaScript file analysis for endpoints",
+                            "API endpoint enumeration (Kiterunner)",
+                            "Rate limiting and throttling detection",
+                            "SSL/TLS configuration testing (testssl.sh)",
+                            "HTTP methods testing (OPTIONS, TRACE, PUT, DELETE)",
+                            "Robots.txt and sitemap.xml analysis"
+                        ]
+                    },
+                    {
+                        title: "1.4 Authentication Testing",
+                        tasks: [
+                            "Default credentials tested (admin/admin, root/toor)",
+                            "Common credential pairs from SecLists",
+                            "Weak password policy validation",
+                            "Username enumeration via login/error messages",
+                            "Username enumeration via registration/password reset",
+                            "Brute force protection mechanism validation",
+                            "Account lockout policy testing",
+                            "Password reset token predictability/expiration",
+                            "Password reset link single-use enforcement",
+                            "Session fixation vulnerability testing",
+                            "CSRF in login functionality",
+                            "Clickjacking on login page",
+                            "Multi-factor authentication (MFA) bypass attempts",
+                            "MFA code brute-forcing/backup codes",
+                            "OAuth 2.0 implementation vulnerabilities",
+                            "OpenID Connect security issues",
+                            "SAML assertion manipulation",
+                            "JWT token security (none alg, weak secret)",
+                            "Remember me functionality security",
+                            "Logout functionality and session invalidation",
+                            "Concurrent session handling",
+                            "Credential stuffing/Password spraying"
+                        ]
+                    },
+                    {
+                        title: "1.5 Session Management",
+                        tasks: [
+                            "Session token entropy and randomness analysis",
+                            "Session token predictability testing",
+                            "Session fixation attacks",
+                            "Session timeout configuration (idle and absolute)",
+                            "Cookie security attributes (Secure, HttpOnly, SameSite)",
+                            "Session token in URL parameter/Referrer/Logs",
+                            "Concurrent session management",
+                            "Session regeneration after auth/privilege escalation",
+                            "Session invalidation on logout",
+                            "Cross-subdomain session sharing",
+                            "Persistent session security (Remember Me)",
+                            "Session puzzling/Cookie tossing attacks"
+                        ]
+                    },
+                    {
+                        title: "1.6 Authorization & Access Control",
+                        tasks: [
+                            "Horizontal privilege escalation (User A -> User B)",
+                            "Vertical privilege escalation (User -> Admin)",
+                            "IDOR - all parameters (user_id, account_id)",
+                            "IDOR in API/File Uploads",
+                            "Missing function-level access control",
+                            "Parameter tampering (role, admin flags)",
+                            "Forced browsing to administrative interfaces",
+                            "Path traversal in URL parameters",
+                            "API endpoints accessible without authentication",
+                            "GraphQL authorization bypass",
+                            "JWT token manipulation/expiration bypass",
+                            "Role-Based Access Control (RBAC) flaws",
+                            "Mass assignment vulnerabilities",
+                            "Broken access control in microservices"
+                        ]
+                    },
+                    {
+                        title: "1.7 SQL Injection",
+                        tasks: [
+                            "SQLi in login/search/URL/POST/Headers",
+                            "SQLi in JSON/XML/File Uploads",
+                            "Error-based / Union-based SQLi",
+                            "Boolean/Time-based blind SQLi",
+                            "Out-of-band SQLi (DNS/HTTP)",
+                            "Second-order SQLi",
+                            "NoSQL injection (MongoDB, CouchDB)",
+                            "SQLi in API endpoints",
+                            "Database fingerprinting / Privilege escalation",
+                            "OS command execution via SQLi (xp_cmdshell)"
+                        ]
+                    },
+                    {
+                        title: "1.8 Cross-Site Scripting (XSS)",
+                        tasks: [
+                            "Reflected XSS in inputs/URL/Headers",
+                            "Stored XSS in profiles/comments/uploads",
+                            "DOM-based XSS via source/sink",
+                            "XSS in error messages/JSON/XML",
+                            "XSS via SVG/HTML file upload",
+                            "XSS in PDF generation/Email templates",
+                            "XSS filter bypass / CSP bypass",
+                            "Mutation XSS (mXSS)",
+                            "XSS to Account Takeover/CSRF"
+                        ]
+                    },
+                    {
+                        title: "1.9 Command Injection",
+                        tasks: [
+                            "OS command injection in inputs/uploads",
+                            "Blind command injection (Time delays/OOB)",
+                            "Shell metacharacters injection",
+                            "Command substitution (backticks, $())",
+                            "Argument/Environment variable injection",
+                            "Code injection (eval, system)",
+                            "SSTI (Server-Side Template Injection)"
+                        ]
+                    },
+                    {
+                        title: "1.10 XXE & SSRF",
+                        tasks: [
+                            "XXE in XML parsers/SOAP/File Uploads",
+                            "Blind XXE / OOB Extraction",
+                            "XXE for local file disclosure/DoS",
+                            "SSRF via URL input/File Import/Webhooks",
+                            "SSRF to Cloud Metadata (169.254.169.254)",
+                            "SSRF to Internal Network Scanning",
+                            "SSRF via protocol smuggling/DNS rebinding"
+                        ]
+                    },
+                    {
+                        title: "1.12 File Upload Vulns",
+                        tasks: [
+                            "Unrestricted file upload (Web Shell)",
+                            "Extension bypass / Double extension / Null byte",
+                            "Content-Type/Magic bytes manipulation",
+                            "Path traversal in filename",
+                            "Malicious content (SVG XSS, XXE)",
+                            "Zip slip / Archive extraction",
+                            "File overwrite / Direct access"
+                        ]
+                    },
+                    {
+                        title: "1.13 Business Logic Flaws",
+                        tasks: [
+                            "Price/Quantity manipulation (Negatives/Overflow)",
+                            "Currency manipulation / Discount abuse",
+                            "Race conditions (Payment/Voting/Coupons)",
+                            "Workflow bypass (Skip steps)",
+                            "Parameter pollution / Mass Assignment",
+                            "Time-based logic flaws",
+                            "Captcha/OTP bypass",
+                            "Trial abuse / Subscription bypass"
+                        ]
+                    },
+                    {
+                        title: "1.14 CSRF",
+                        tasks: [
+                            "CSRF token absence/validation bypass",
+                            "CSRF via GET/POST/JSON",
+                            "CSRF in login/logout/critical actions",
+                            "SameSite cookie validation",
+                            "Clickjacking combined with CSRF"
+                        ]
+                    },
+                    {
+                        title: "1.15 Cryptographic Failures",
+                        tasks: [
+                            "Weak SSL/TLS / Weak Ciphers (RC4, DES)",
+                            "HSTS missing/misconfigured",
+                            "Weak hashing algorithms (MD5, SHA1)",
+                            "Sensitive data in HTTP / Mixed content",
+                            "Hardcoded keys/secrets",
+                            "Predictable randomness",
+                            "Padding oracle vulnerabilities",
+                            "Heartbleed / POODLE checks"
+                        ]
+                    },
+                    {
+                        title: "1.16 Information Disclosure",
+                        tasks: [
+                            "Verbose error messages / Stack traces",
+                            "Debug mode enabled / Server headers",
+                            "Directory listing / Backup files (.bak, .git)",
+                            "Source code disclosure / Maps files",
+                            "API docs/Swagger exposed",
+                            "Internal IP/Email disclosure"
+                        ]
+                    },
+                    {
+                        title: "1.17 Security Headers",
+                        tasks: [
+                            "X-Frame-Options / Clickjacking",
+                            "Content-Security-Policy (CSP)",
+                            "Strict-Transport-Security (HSTS)",
+                            "X-Content-Type-Options: nosniff",
+                            "Referrer-Policy / Permissions-Policy"
+                        ]
+                    },
+                    {
+                        title: "1.18 Client-Side Security",
+                        tasks: [
+                            "Sensitive data in LocalStorage/SessionStorage",
+                            "API keys/Secrets in JS code",
+                            "DOM Clobbering / Prototype Pollution",
+                            "PostMessage vulnerabilities",
+                            "CORS misconfiguration (*)",
+                            "Subresource Integrity (SRI) missing",
+                            "Open Redirect in client-side routing"
                         ]
                     }
                 ]
             },
             {
-                title: "3. Cloud Security",
+                title: "2. API Security Testing",
+                icon: "fa-server",
+                categories: [
+                    {
+                        title: "★ OWASP API Top 10 (2023)",
+                        isOwasp: true,
+                        tasks: [
+                            "API1: Broken Object Level Auth (BOLA)",
+                            "API2: Broken Authentication",
+                            "API3: Broken Object Property Level Auth (BOPLA)",
+                            "API4: Unrestricted Resource Consumption",
+                            "API5: Broken Function Level Auth (BFLA)",
+                            "API6: Unrestricted Access to Sensitive Flows",
+                            "API7: Server Side Request Forgery (SSRF)",
+                            "API8: Security Misconfiguration",
+                            "API9: Improper Inventory Management",
+                            "API10: Unsafe Consumption of APIs"
+                        ]
+                    },
+                    {
+                        title: "2.1 API Reconnaissance",
+                        tasks: [
+                            "Endpoint enumeration (Brute-force)",
+                            "Docs discovery (Swagger, OpenAPI, RAML)",
+                            "API Versioning enumeration",
+                            "GraphQL/SOAP/WebSocket discovery",
+                            "Method mapping / Parameter discovery",
+                            "Postman collection discovery"
+                        ]
+                    },
+                    {
+                        title: "2.2 API Auth & AuthZ",
+                        tasks: [
+                            "API Key Security / Leakage",
+                            "JWT Analysis (Algo, Secret, Expiry)",
+                            "OAuth 2.0 Flaws / Token Leakage",
+                            "BOLA/IDOR Checks",
+                            "BFLA / Privilege Escalation",
+                            "Missing Auth on sensitive endpoints"
+                        ]
+                    },
+                    {
+                        title: "2.3 REST API Security",
+                        tasks: [
+                            "HTTP Method Tampering",
+                            "Mass Assignment / Excessive Data Exposure",
+                            "Parameter Pollution",
+                            "HTTP Verb Tunneling",
+                            "Insecure Deserialization",
+                            "Injection Attacks (SQLi, NoSQLi, XXE)"
+                        ]
+                    },
+                    {
+                        title: "2.4 GraphQL Security",
+                        tasks: [
+                            "Introspection Query Enabled",
+                            "Query Depth/Complexity Limits (DoS)",
+                            "Batching/Circular Query Attacks",
+                            "Field Suggestion / Auth Bypass",
+                            "GraphQL Injection / Mutation Flaws"
+                        ]
+                    },
+                    {
+                        title: "2.5 Rate Limiting & DoS",
+                        tasks: [
+                            "Rate limit bypass techniques",
+                            "Resource exhaustion / Large payloads",
+                            "Regex DoS (ReDoS)",
+                            "Algorithmic complexity attacks"
+                        ]
+                    },
+                    {
+                        title: "2.6 API Data Validation",
+                        tasks: [
+                            "Input validation / Content-Type check",
+                            "XML/JSON Injection",
+                            "Prototype Pollution",
+                            "Integer Overflow / Type Mismatch"
+                        ]
+                    },
+                    {
+                        title: "2.7 SOAP & XML Services",
+                        tasks: [
+                            "WSDL Analysis",
+                            "XML Bomb / XXE",
+                            "SOAP Action Spoofing",
+                            "SAML Injection"
+                        ]
+                    },
+                    {
+                        title: "2.8 Misconfigurations",
+                        tasks: [
+                            "CORS Wildcard / Credentials",
+                            "Verbose Errors / Stack Traces",
+                            "Unnecessary Methods Enabled",
+                            "Missing TLS / Security Headers"
+                        ]
+                    },
+                    {
+                        title: "2.9 API Business Logic",
+                        tasks: [
+                            "Race Conditions",
+                            "Idempotency Issues",
+                            "Transaction Replay",
+                            "Order of Operations Bypass"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "3. Network & Infrastructure",
+                icon: "fa-network-wired",
+                categories: [
+                    {
+                        title: "3.1 Network Reconnaissance",
+                        tasks: [
+                            "Network range identification / CIDR",
+                            "Live host discovery (Ping sweep)",
+                            "SNMP/NetBIOS Enumeration",
+                            "DNS Zone Transfer / Reverse Lookup",
+                            "Traceroute / ASN / BGP info"
+                        ]
+                    },
+                    {
+                        title: "3.2 Port Scanning",
+                        tasks: [
+                            "Full TCP Port Scan (All 65535)",
+                            "UDP Port Scan",
+                            "Service Version Detection",
+                            "OS Fingerprinting",
+                            "NSE Script Scanning"
+                        ]
+                    },
+                    {
+                        title: "3.3 Protocol Testing",
+                        tasks: [
+                            "ARP Spoofing / DHCP Starvation",
+                            "DNS Poisoning / Amplification",
+                            "SNMP Weak Communities",
+                            "SMB/NetBIOS Vulns (EternalBlue)",
+                            "FTP/Telnet/SSH/RDP Assessment",
+                            "Kerberos Enumeration"
+                        ]
+                    },
+                    {
+                        title: "3.4 Wireless Security",
+                        tasks: [
+                            "WEP/WPA/WPA2 Cracking",
+                            "WPS PIN Brute-forcing",
+                            "Rogue AP / Evil Twin",
+                            "Deauth Attacks / Hidden SSID"
+                        ]
+                    },
+                    {
+                        title: "3.5 Service Vulnerabilities",
+                        tasks: [
+                            "Web Server Vulns (Apache/Nginx/IIS)",
+                            "Database Exposure (MySQL/Redis/Mongo)",
+                            "Mail Server Relays",
+                            "Docker/K8s API Exposure",
+                            "Unpatched Services (Jenkins, GitLab)"
+                        ]
+                    },
+                    {
+                        title: "3.6 Firewall & IDS/IPS",
+                        tasks: [
+                            "Firewall Rule Enumeration / ACL Bypass",
+                            "IDS/IPS Evasion (Fragmentation)",
+                            "Egress Filtering Tests"
+                        ]
+                    },
+                    {
+                        title: "3.7 VPN Security",
+                        tasks: [
+                            "VPN Protocol Weaknesses",
+                            "Credential Brute-forcing",
+                            "Split Tunneling / DNS Leaks"
+                        ]
+                    },
+                    {
+                        title: "3.8 Network Segmentation",
+                        tasks: [
+                            "VLAN Hopping",
+                            "Zone Boundary Testing",
+                            "DMZ Configuration / Lateral Movement"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "4. Mobile App Security",
+                icon: "fa-mobile-screen",
+                categories: [
+                    {
+                        title: "★ OWASP Mobile Top 10",
+                        isOwasp: true,
+                        tasks: [
+                            "M1: Improper Credential Usage",
+                            "M2: Inadequate Supply Chain Security",
+                            "M3: Insecure Authentication/Authorization",
+                            "M4: Insufficient Input/Output Validation",
+                            "M5: Insecure Communication",
+                            "M6: Inadequate Privacy Controls",
+                            "M7: Insufficient Binary Protections",
+                            "M8: Security Misconfiguration",
+                            "M9: Insecure Data Storage",
+                            "M10: Insufficient Cryptography"
+                        ]
+                    },
+                    {
+                        title: "4.1 Static Analysis",
+                        tasks: [
+                            "Decompilation (Jadx/Hopper)",
+                            "Hardcoded Secrets / API Keys",
+                            "Code Obfuscation check",
+                            "Manifest/Plist Permissions",
+                            "Exported Components / URL Schemes",
+                            "Binary Protections (ASLR, PIE)"
+                        ]
+                    },
+                    {
+                        title: "4.2 Dynamic Analysis",
+                        tasks: [
+                            "Runtime Manipulation (Frida/Objection)",
+                            "Root/Jailbreak Detection Bypass",
+                            "SSL Pinning Bypass",
+                            "Insecure Data Storage (SharedPrefs/SQLite/Keychain)",
+                            "Background Snapshots / Copy-Paste Buffer"
+                        ]
+                    },
+                    {
+                        title: "4.3 Network Communication",
+                        tasks: [
+                            "Cleartext Traffic / Cert Validation",
+                            "MITM Attacks (Burp/Charles)",
+                            "API Endpoint Security / Token Storage"
+                        ]
+                    },
+                    {
+                        title: "4.4 Mobile-Specific Attacks",
+                        tasks: [
+                            "Intent Hijacking / Deep Links",
+                            "Broadcast Receiver Exploitation",
+                            "WebView Vulns / JS Bridge",
+                            "Tapjacking / Overlay Attacks"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "5. Cloud Security",
                 icon: "fa-cloud",
                 categories: [
                     {
@@ -867,10 +822,10 @@
                         tasks: [
                             "CN1: Insecure Cloud Config",
                             "CN2: Injection Flaws",
-                            "CN3: Improper Auth & Authorization",
+                            "CN3: Improper Auth & Authz",
                             "CN4: CI/CD Pipeline Flaws",
                             "CN5: Secrets Management",
-                            "CN6: SSRF (Metadata Abuse)",
+                            "CN6: SSRF (Metadata)",
                             "CN7: Serverless Deployment",
                             "CN8: Insecure Logging",
                             "CN9: Known Vulnerabilities",
@@ -878,87 +833,114 @@
                         ]
                     },
                     {
-                        title: "3.1 AWS Assessment",
+                        title: "5.1 AWS Security",
                         tasks: [
-                            "S3 Bucket Public Access",
-                            "IAM Privilege Escalation",
+                            "S3 Bucket Enum & Public Access",
                             "EC2 Metadata SSRF (IMDSv1)",
-                            "Lambda Code Injection",
-                            "Route53 Dangling DNS"
+                            "IAM Privilege Escalation",
+                            "Security Groups / RDS Access",
+                            "Lambda / API Gateway Config",
+                            "EBS Snapshots / AMI Exposure"
+                        ]
+                    },
+                    {
+                        title: "5.2 Azure Security",
+                        tasks: [
+                            "Blob Storage Enumeration",
+                            "Azure AD Auth Flaws",
+                            "Key Vault Security",
+                            "Function Apps / NSG Rules"
+                        ]
+                    },
+                    {
+                        title: "5.3 GCP Security",
+                        tasks: [
+                            "GCS Bucket Permissions",
+                            "Service Account Keys",
+                            "Compute Engine / Cloud Functions",
+                            "BigQuery / Cloud SQL Access"
+                        ]
+                    },
+                    {
+                        title: "5.4 Container Security",
+                        tasks: [
+                            "Docker Escape / API Exposure",
+                            "Privileged Containers",
+                            "Image Vulnerabilities",
+                            "Kubernetes Misconfig / RBAC",
+                            "K8s API Server / Pod Security"
                         ]
                     }
                 ]
             },
             {
-                title: "4. Mobile Security",
-                icon: "fa-mobile-screen",
+                title: "6. Tools & Reference",
+                icon: "fa-toolbox",
                 categories: [
                     {
-                        title: "★ OWASP Mobile Top 10",
-                        isOwasp: true,
+                        title: "6.1 Recon Tools",
                         tasks: [
-                            "M1: Improper Credential Usage",
-                            "M2: Supply Chain Security",
-                            "M3: Insecure Auth/Authz",
-                            "M4: Input/Output Validation",
-                            "M5: Insecure Communication",
-                            "M6: Inadequate Privacy",
-                            "M7: Binary Protections",
-                            "M8: Security Misconfiguration",
-                            "M9: Insecure Data Storage",
-                            "M10: Insufficient Cryptography"
+                            "subfinder -d target.com -silent",
+                            "amass enum -passive -d target.com",
+                            "theHarvester -d target.com -b all",
+                            "shodan search hostname:target.com",
+                            "waybackurls target.com"
                         ]
                     },
                     {
-                        title: "4.1 Android Checks",
+                        title: "6.2 Scanning Tools",
                         tasks: [
-                            "Decompilation Review",
-                            "Hardcoded Secrets (strings.xml)",
-                            "Exported Components",
-                            "Deep Link / Intent URI Vulns",
-                            "Root Detection Bypass",
-                            "SSL Pinning Bypass"
+                            "nmap -p- -sS -sV -sC -O -A target.com",
+                            "masscan -p1-65535 target.com",
+                            "ffuf -u url/FUZZ -w wordlist.txt",
+                            "nuclei -u target.com -t cves/",
+                            "nikto -h target.com"
                         ]
                     },
                     {
-                        title: "4.2 iOS Checks",
+                        title: "6.3 Exploitation Tools",
                         tasks: [
-                            "Jailbreak Detection Bypass",
-                            "Info.plist (ATS)",
-                            "Keychain Data Storage",
-                            "URL Scheme Handling"
+                            "sqlmap -u 'url' --batch --dbs",
+                            "xsstrike -u 'url'",
+                            "commix --url='url'",
+                            "ssrfmap -r request.txt",
+                            "hydra -L users.txt -P pass.txt target.com"
+                        ]
+                    },
+                    {
+                        title: "6.7 Mobile Tools",
+                        tasks: [
+                            "adb devices / pull data",
+                            "frida-ps -U / objection explore",
+                            "apktool d app.apk",
+                            "mobsf (Automated)"
                         ]
                     }
                 ]
             },
             {
-                title: "5. Network & IoT",
-                icon: "fa-network-wired",
+                title: "7. Reporting Guide",
+                icon: "fa-file-contract",
                 categories: [
                     {
-                        title: "★ OWASP IoT Top 10",
-                        isOwasp: true,
+                        title: "Severity Classification",
                         tasks: [
-                            "I1: Weak Passwords",
-                            "I2: Insecure Network Services",
-                            "I3: Insecure Ecosystem Interfaces",
-                            "I4: Insecure Update Mechanism",
-                            "I5: Insecure Components",
-                            "I6: Privacy Protection",
-                            "I7: Insecure Data Transfer",
-                            "I8: Device Management",
-                            "I9: Default Settings",
-                            "I10: Physical Hardening"
+                            "CRITICAL: RCE, SQLi (Exfil), Auth Bypass",
+                            "HIGH: Stored XSS, IDOR (Sensitive), SSRF",
+                            "MEDIUM: Reflected XSS, CSRF, Weak Crypto",
+                            "LOW: Info Disclosure, Missing Headers",
+                            "INFO: Best Practices, Code Quality"
                         ]
                     },
                     {
-                        title: "5.1 Network Infra",
+                        title: "Report Template",
                         tasks: [
-                            "Port Scanning (Full TCP/UDP)",
-                            "Service Version Enumeration",
-                            "SMB/NetBIOS Vulns",
-                            "Weak SSL/TLS Ciphers",
-                            "Default Panel Credentials"
+                            "Executive Summary & Risk Rating",
+                            "Technical Findings (Title, Severity, Desc)",
+                            "Impact (Business & Technical)",
+                            "Affected URLs/Components",
+                            "Proof of Concept (PoC) & Screenshots",
+                            "Remediation & References"
                         ]
                     }
                 ]
@@ -985,8 +967,9 @@
             if(t.includes('burp')) tools.push('Burp Suite');
             if(t.includes('idor')) tools.push('Authorize (Burp)');
             if(t.includes('api')) tools.push('Postman', 'Kiterunner');
+            if(t.includes('shodan')) tools.push('Shodan CLI');
             
-            if(tools.length === 0) tools.push('Manual Review', 'Burp Suite');
+            if(tools.length === 0) tools.push('Manual Review');
             
             return [...new Set(tools)].slice(0, 3);
         }
@@ -1000,7 +983,7 @@
 
             init() {
                 try {
-                    const saved = localStorage.getItem('vapt_state_v6');
+                    const saved = localStorage.getItem('vapt_state_v7');
                     if(saved) this.state = JSON.parse(saved);
                     
                     const savedTheme = localStorage.getItem('vapt_theme');
@@ -1115,7 +1098,6 @@
                 this.activeDomainIdx = dIdx;
                 this.activeCategoryIdx = cIdx;
                 
-                // Auto Close mobile sidebar on selection
                 if(window.innerWidth < 768) {
                     this.toggleMobileSidebar();
                 }
@@ -1174,7 +1156,7 @@
             },
 
             toggleDomain(dIdx) {
-                // Exclusive Accordion Logic: Close others
+                // Exclusive Accordion
                 vaptData.forEach((_, idx) => {
                     if(idx !== dIdx) this.state[`open_${idx}`] = false;
                 });
@@ -1229,14 +1211,14 @@
             },
 
             save() {
-                localStorage.setItem('vapt_state_v6', JSON.stringify(this.state));
+                localStorage.setItem('vapt_state_v7', JSON.stringify(this.state));
             },
 
             resetData() {
                 if(confirm("Are you sure you want to clear all progress?")) {
                     this.state = {};
                     this.save();
-                    location.reload(); // Hard reload to reset UI to default state
+                    location.reload(); 
                 }
             }
         };
