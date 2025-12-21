@@ -1,661 +1,766 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ultimate Pentesting Checklist</title>
+    <title>Ultimate VAPT Framework | Security Audit Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#6366f1', 600: '#4f46e5' },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #e2e8f0; /* slate-200 */
-            color: #1e293b; /* slate-800 */
-            min-height: 100vh;
-        }
-        .main-container {
-            background-color: #ffffff;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .checklist-item.completed label {
-            text-decoration: line-through;
-            color: #94a3b8; /* slate-400 */
-        }
-        details {
-            transition: all 0.3s ease-in-out;
-        }
-        details summary {
-            list-style: none;
-            cursor: pointer;
-            outline: none;
-            border-bottom: 1px solid #e2e8f0; /* slate-200 */
-            transition: background-color 0.2s ease-in-out;
-        }
-        #checklist-container > details:last-of-type {
-             border-bottom: 1px solid #e2e8f0;
-        }
-        details:not([open]) summary:hover {
-            background-color: #f8fafc; /* slate-50 */
-        }
-        details summary::-webkit-details-marker { display: none; }
-        details summary .arrow { transition: transform 0.3s ease; color: #94a3b8; }
-        details[open] > summary .arrow { transform: rotate(90deg); }
-        
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0d9488; }
-        
-        input[type="checkbox"] {
-            appearance: none; background-color: transparent; margin-right: 12px; color: #0d9488;
-            width: 1.25em; height: 1.25em; border: 2px solid #cbd5e1;
-            border-radius: 4px; transform: translateY(-0.075em); display: grid; place-content: center;
-            flex-shrink: 0; cursor: pointer; transition: all 0.2s;
-        }
-        input[type="checkbox"]:hover { border-color: #5eead4; }
-        input[type="checkbox"]::before { content: ""; width: 0.65em; height: 0.65em; transform: scale(0); transition: 120ms transform ease-in-out; box-shadow: inset 1em 1em currentColor; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); }
-        input[type="checkbox"]:checked { background-color: #0d9488; border-color: #5eead4; }
-        input[type="checkbox"]:checked::before { transform: scale(1); color: #ffffff; }
-        
-        .nested-item { padding-left: 2.5rem; }
-        .sub-details {
-            margin-left: 0; 
-        }
-        .sub-details summary {
-            font-weight: normal;
-            font-size: 1rem;
-            padding: 0;
-            border: none;
-            display: flex;
-            align-items: center;
-        }
-         .sub-details summary:hover {
-            background-color: transparent;
-         }
-         .sub-details[open] summary {
-            margin-bottom: 0.5rem;
-         }
-         .sub-details .arrow-nested {
-            width: 1.25rem;
-            height: 1.25rem;
-            margin-right: 0.5rem;
-            color: #94a3b8;
-            transition: transform 0.3s ease;
-         }
-        .sub-details[open] .arrow-nested {
-            transform: rotate(90deg);
+        /* CSS Variables for Theming */
+        :root {
+            --bg-body: #f8fafc;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --hover-bg: #f1f5f9;
+            --accent-color: #6366f1;
+            --checkbox-border: #cbd5e1;
+            --checkbox-checked: #10b981;
         }
 
-        /* AI Chatbot Styles */
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 4px 15px rgba(13, 148, 136, 0.5);
-            }
-            50% {
-                box-shadow: 0 4px 30px rgba(45, 212, 191, 0.8);
-            }
+        /* Dark Mode Overrides */
+        .dark {
+            --bg-body: #050505;
+            --bg-sidebar: #0a0a0a;
+            --bg-card: #121212;
+            --border-color: #27272a;
+            --text-primary: #e4e4e7;
+            --text-secondary: #a1a1aa;
+            --hover-bg: #1c1c1c;
+            --accent-color: #818cf8;
+            --checkbox-border: #52525b;
+            --checkbox-checked: #10b981;
         }
-        .chat-bubble {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 70px; 
-            height: 70px;
-            background-color: #0d9488; /* teal-600 */
-            border: 2px solid #5eead4; /* teal-300 */
-            border-radius: 50%;
+
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-primary); 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-secondary); border-radius: 3px; opacity: 0.2; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+
+        /* Accordion Animation */
+        .accordion-content {
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 5000px;
+            opacity: 1;
+        }
+
+        /* FIXED CHECKBOX STYLING (SVG ICON) */
+        .custom-checkbox {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--checkbox-border);
+            border-radius: 6px;
+            background-color: transparent;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            animation: pulse 2.5s infinite;
         }
-        .chat-bubble:hover { transform: scale(1.1); }
-        .chat-window {
-            position: fixed;
-            bottom: 110px; 
-            right: 25px;
-            width: 400px; /* Increased from 350px */
-            height: 450px;
-            background-color: #111827;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transform: scale(0);
-            transform-origin: bottom right;
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
+        .custom-checkbox:hover {
+            border-color: var(--accent-color);
         }
-        .chat-window.open { transform: scale(1); }
-        .chat-header { 
-            background-color: #1f2937; 
-            padding: 15px; 
-            color: white; 
-            font-weight: bold;
-            display: flex;
+        .custom-checkbox:checked {
+            background-color: var(--checkbox-checked);
+            border-color: var(--checkbox-checked);
+            /* SVG Checkmark Data URI */
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform: scale(1.05);
+        }
+
+        /* Task Card */
+        .task-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .task-card:hover {
+            transform: translateX(4px);
+            border-color: var(--accent-color);
+            border-left-color: var(--accent-color);
+            background-color: var(--hover-bg);
+        }
+        .task-card.checked {
+            border-left-color: var(--checkbox-checked);
+            opacity: 0.7;
+            background-color: var(--hover-bg);
+        }
+
+        /* Tool Badge */
+        .tool-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--accent-color);
+            font-family: 'JetBrains Mono', monospace;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 4px;
         }
-        .chat-close-btn { background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.5rem; line-height: 1; }
-        .chat-body { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;}
-        .chat-body ul { list-style-type: disc; padding-left: 20px; margin-top: 5px; margin-bottom: 5px; }
-        .chat-body li { margin-bottom: 4px; }
-        .chat-input-area { padding: 10px; border-top: 1px solid #374151; display: flex; gap: 10px; }
-        #chat-input { flex-grow: 1; background-color: #374151; border: 1px solid #4b5563; color: white; border-radius: 8px; padding: 10px; }
-        #chat-send-btn { background-color: #0d9488; color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; transition: background-color 0.2s ease; }
-        #chat-send-btn:hover { background-color: #14b8a6; }
-        .chat-message { max-width: 80%; padding: 10px 15px; border-radius: 15px; word-wrap: break-word; color: #e5e7eb; }
-        .user-message { background-color: #0d9488; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .bot-message { background-color: #374151; color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .typing-indicator { align-self: flex-start; color: #9ca3af; font-style: italic; font-size: 0.8rem; }
+        
+        /* OWASP Badge */
+        .owasp-badge {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.2));
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+        .dark .owasp-badge { color: #fbbf24; }
+        .light .owasp-badge { color: #d97706; border-color: #d97706; background: rgba(251, 191, 36, 0.1); }
+
+        /* Sidebar Item */
+        .sidebar-item {
+            color: var(--text-secondary);
+        }
+        .sidebar-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+        .sidebar-item.active-domain {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
     </style>
 </head>
-<body class="p-4 sm:p-6 md:p-8 flex items-center justify-center">
+<body class="h-screen flex flex-col overflow-hidden">
 
-    <div class="w-full max-w-4xl mx-auto main-container p-6 sm:p-8 rounded-2xl">
-        
-        <header class="text-center mb-8">
-            <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-500">The Ultimate Pentesting Checklist</h1>
-            <p class="text-slate-500 mt-3">A stepwise guide for modern security assessments (Developed by Mr Vk)</p>
-        </header>
-
-        <div class="bg-slate-100 p-4 rounded-xl shadow-inner border border-slate-200/50 mb-8">
-            <div class="flex items-center justify-between mb-3"><span class="text-sm font-medium text-slate-500">Overall Progress</span><span id="progress-text" class="text-sm font-bold text-teal-600">0%</span></div>
-            <div class="w-full bg-slate-200 rounded-full h-3"><div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-cyan-500 h-3 rounded-full transition-all duration-500 ease-out" style="width: 0%;"></div></div>
-            <div class="flex flex-col sm:flex-row gap-4 mt-4">
-                <input type="text" id="search-box" placeholder="Search vulnerabilities..." class="flex-grow w-full bg-white border border-slate-300 text-slate-700 rounded-lg p-3 focus:ring-2 focus:ring-teal-500 focus:outline-none transition-all">
-                <button id="reset-button" class="w-full sm:w-auto bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-lg transition-colors">Reset</button>
+    <!-- Top Navigation -->
+    <header class="h-16 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)] flex items-center justify-between px-6 shrink-0 z-20 shadow-sm transition-colors duration-300">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-shield-cat text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-[var(--text-primary)] tracking-tight text-lg">Security Audit Pro</h1>
+                <div class="text-[10px] text-[var(--text-secondary)] uppercase tracking-widest font-semibold">Ultimate VAPT Framework</div>
             </div>
         </div>
-
-        <div class="space-y-0" id="checklist-container">
-            <!-- All details sections will be populated here by the script -->
-        </div>
         
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex flex-col items-end">
+                <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-medium">
+                    <span>Audit Coverage</span>
+                    <span id="global-percent" class="text-indigo-500 font-mono font-bold text-sm">0%</span>
+                </div>
+                <div class="w-40 h-1.5 bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
+                    <div id="global-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="h-8 w-px bg-[var(--border-color)] hidden md:block"></div>
+            
+            <div class="flex gap-2">
+                <!-- Theme Toggle -->
+                <button onclick="app.toggleTheme()" class="h-9 w-9 rounded-lg border border-[var(--border-color)] hover:bg-[var(--hover-bg)] text-[var(--text-secondary)] transition-all flex items-center justify-center" title="Toggle Theme">
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                    <i class="fa-solid fa-moon block dark:hidden"></i>
+                </button>
+
+                <button onclick="app.resetData()" class="h-9 px-4 rounded-lg border border-[var(--border-color)] hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 text-[var(--text-secondary)] transition-all text-xs font-medium flex items-center gap-2" title="Reset All">
+                    <i class="fa-solid fa-rotate-right"></i> Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-80 bg-[var(--bg-sidebar)] border-r border-[var(--border-color)] flex flex-col h-full shrink-0 transition-colors duration-300">
+            <!-- Search -->
+            <div class="p-4 border-b border-[var(--border-color)]">
+                <div class="relative group">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-[var(--text-secondary)] text-xs group-focus-within:text-indigo-500 transition-colors"></i>
+                    <input type="text" id="search-input" placeholder="Search checklists..." 
+                           class="w-full bg-[var(--bg-body)] border border-[var(--border-color)] rounded-lg py-2.5 pl-9 pr-3 text-xs text-[var(--text-primary)] focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all placeholder-[var(--text-secondary)]">
+                </div>
+            </div>
+            
+            <!-- Checklist Tree -->
+            <div id="sidebar-container" class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                <!-- Javascript will inject items here -->
+            </div>
+            
+            <!-- Footer -->
+            <div class="p-3 border-t border-[var(--border-color)] text-center">
+                 <span class="text-[10px] text-[var(--text-secondary)] font-mono flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-code-branch"></i> v2025.4.0 • OWASP 2025
+                 </span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col bg-[var(--bg-body)] relative transition-colors duration-300">
+            
+            <!-- Category Header -->
+            <div class="h-24 border-b border-[var(--border-color)] bg-[var(--bg-sidebar)]/50 backdrop-blur-sm px-8 flex flex-col justify-center shrink-0">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span id="header-domain" class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[var(--hover-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] uppercase tracking-wider">SELECT DOMAIN</span>
+                        </div>
+                        <h2 id="header-title" class="text-2xl font-bold text-[var(--text-primary)] tracking-tight">Dashboard</h2>
+                    </div>
+                    <div class="text-right hidden sm:block">
+                        <div class="text-3xl font-mono font-bold text-[var(--text-primary)]" id="category-stats">0<span class="text-[var(--text-secondary)] text-xl">/0</span></div>
+                        <div class="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider font-semibold mt-1">Checks Verified</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks Area -->
+            <div id="tasks-list" class="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+                <!-- Empty State -->
+                <div class="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] opacity-60">
+                    <div class="w-20 h-20 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center mb-6 shadow-xl">
+                        <i class="fa-solid fa-list-check text-3xl"></i>
+                    </div>
+                    <p class="text-sm font-medium">Select a category from the sidebar to begin auditing.</p>
+                </div>
+            </div>
+
+        </main>
     </div>
 
-    <!-- AI Chatbot -->
-    <div id="chat-bubble" class="chat-bubble">
-       <svg class="w-9 h-9 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 20V19C9 16.2386 11.2386 14 14 14H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M5 14H9C11.7614 14 14 11.7614 14 9V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M15 5V4C15 2.89543 14.1046 2 13 2H11C9.89543 2 9 2.89543 9 4V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M5 14V15C5 16.1046 5.89543 17 7 17H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M19 14V13C19 11.8954 18.1046 11 17 11H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M9 9C9 7.89543 8.10457 7 7 7H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor">
-                <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
-            </circle>
-        </svg>
-    </div>
-    <div id="chat-window" class="chat-window">
-        <div class="chat-header">
-            <span class="flex items-center gap-2">
-                 <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 20V19C9 16.2386 11.2386 14 14 14H19" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M5 14H9C11.7614 14 14 11.7614 14 9V5" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M15 5V4C15 2.89543 14.1046 2 13 2H11C9.89543 2 9 2.89543 9 4V5" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M5 14V15C5 16.1046 5.89543 17 7 17H9" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M19 14V13C19 11.8954 18.1046 11 17 11H14" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M9 9C9 7.89543 8.10457 7 7 7H5" stroke="#5eead4" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="12" cy="12" r="2" fill="#5eead4"/>
-                </svg>
-                Pentesting Assistant Bot
-            </span>
-             <button id="chat-close-btn" class="chat-close-btn">&times;</button>
-        </div>
-        <div id="chat-body" class="chat-body">
-            <div class="chat-message bot-message">Hello! I'm your Pentesting Assistant. Ask me about any vulnerability or concept from the checklist.</div>
-        </div>
-        <form id="chat-form" class="chat-input-area">
-            <input type="text" id="chat-input" placeholder="Explain IDOR..." required>
-            <button type="submit" id="chat-send-btn">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            </button>
-        </form>
-    </div>
-
+    <!-- Initialization Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const checklistData = [
-                {
-                    title: "1. Reconnaissance / Information Disclosure",
-                    items: [
-                        "Subdomain enumeration",
-                        { "text": "DNS misconfiguration", "nested": ["Zone transfer (AXFR)", "Exposed DNS records (TXT, SPF, DMARC, DKIM)"] },
-                        "Orphaned subdomains / dangling DNS",
-                        "Cloud storage buckets exposed (S3, GCP, Azure)",
-                        "Publicly exposed API docs (Swagger/OpenAPI/GraphQL)",
-                        "Git repo leakage (.git/)",
-                        "Backup/config files exposed (.bak, .old, .zip)",
-                        "Robots.txt / sitemap leaks",
-                        "Error message disclosure",
-                        "Stack trace exposure",
-                        "Metadata in files (EXIF, PDF, DOCX)",
-                        "Commented-out sensitive code in HTML/JS"
-                    ]
-                },
-                {
-                    title: "2. Authentication",
-                    items: [
-                        "Weak password policy",
-                        "Credential stuffing vulnerability",
-                        "Brute force not rate-limited",
-                        "Default credentials",
-                        "Account enumeration via responses",
-                        { "text": "Insecure password reset flow", "nested": ["Reset token predictability / leakage", "Password reset via GET link", "Email/phone based reset bypass"] },
-                        { "text": "2FA bypass (logic flaws)", "nested": ["SMS/Email OTP reuse or interception"] },
-                        "Missing account lockout",
-                        "Login CSRF",
-                        { "text": "OAuth misconfigurations", "nested": ["Authorization code interception", "Token leakage in URL", "Open redirect in redirect_uri", "State parameter not validated"] },
-                        "SAML / OIDC misconfig",
-                        "Social login abuse (account takeover via link)"
-                    ]
-                },
-                {
-                    title: "3. Session Management",
-                    items: [
-                        "Session fixation",
-                        "Session ID in URL",
-                        "Session not invalidated on logout",
-                        { "text": "JWT vulnerabilities", "nested": ["None algorithm", "Weak signing key", "Missing expiration", "Replay attacks"] },
-                        "Cookie flags missing (HttpOnly, Secure, SameSite)",
-                        "Overly broad cookie scope (Path/Domain)",
-                        "Session timeout not enforced"
-                    ]
-                },
-                {
-                    title: "4. Access Control (Authorization)",
-                    items: [
-                        "IDOR / BOLA (Insecure Direct Object References)",
-                        "Vertical privilege escalation (user → admin)",
-                        "Horizontal privilege escalation (user A → user B data)",
-                        "Missing function-level access control",
-                        "Mass assignment (insecure deserialization of JSON params)",
-                        "Role manipulation via hidden fields / API",
-                        "Privilege escalation via password reset of admin accounts",
-                        { "text": "CORS misconfig", "nested": ["Wildcard * with credentials", "Reflection of Origin header", "Internal origin trust"] }
-                    ]
-                },
-                {
-                    title: "5. Injection",
-                    items: [
-                        { "text": "SQL Injection", "nested": ["Classic (Boolean/Union/Time)", "Blind SQLi", "Second-order SQLi", "Stored procedure injection"] },
-                        "NoSQL Injection (Mongo, Couch, etc.)",
-                        "Command Injection",
-                        "Code Injection",
-                        "CRLF Injection (HTTP response splitting)",
-                        "Email header injection (SMTP)",
-                        "XPath Injection",
-                        "LDAP Injection",
-                        "GraphQL Injection (directive abuse, query injection)",
-                        "Template Injection (SSTI, e.g., Jinja, Twig, Liquid)",
-                        "Expression Language Injection (EL in Java/Spring)",
-                        "Log Injection (Log4Shell type)"
-                    ]
-                },
-                {
-                    title: "6. Cross-Site Scripting (XSS)",
-                    items: [
-                        "Reflected XSS",
-                        "Stored XSS",
-                        "DOM-based XSS",
-                        "Self-XSS",
-                        "XSS via SVG/MathML/XML",
-                        "XSS via third-party integrations (analytics, widgets)",
-                        "CSP bypass XSS"
-                    ]
-                },
-                {
-                    title: "7. Cross-Site Request Forgery (CSRF)",
-                    items: [
-                        "Missing CSRF tokens",
-                        "CSRF via GET requests (unsafe GET)",
-                        "Token not bound to user session",
-                        "SameSite cookie misconfig allowing CSRF",
-                        "Login CSRF / account linking"
-                    ]
-                },
-                {
-                    title: "8. File Handling",
-                    items: [
-                        "Unrestricted file upload",
-                        "MIME type validation bypass",
-                        "Polyglot file upload (image+script)",
-                        "File path traversal (../)",
-                        "Remote File Inclusion (RFI)",
-                        "Local File Inclusion (LFI)",
-                        "Zip Slip (path traversal inside zip)",
-                        "Image processing vulnerabilities (ImageTragick)",
-                        "Insecure temp file handling"
-                    ]
-                },
-                {
-                    title: "9. Server-Side Request Forgery (SSRF)",
-                    items: [
-                        "Blind SSRF",
-                        "SSRF via file://, gopher://, dict:// schemes",
-                        "SSRF → internal port scan",
-                        "SSRF → cloud metadata service (AWS/GCP/Azure)",
-                        "SSRF via DNS rebinding"
-                    ]
-                },
-                {
-                    title: "10. XML / XXE",
-                    items: [
-                        "External entity expansion",
-                        "Blind XXE via OOB exfiltration",
-                        "Billion laughs (DoS)",
-                        "XML parameter entities",
-                        "Insecure SOAP parser",
-                        "SAML signature wrapping"
-                    ]
-                },
-                 {
-                    title: "11. API Security",
-                    items: [
-                        { "category": "Authentication Issues", "nested": ["Broken User Authentication", "Weak / Missing MFA", "Default / Hardcoded Credentials", "API Keys or Tokens in Client-side Code", "JWT Misconfigurations (alg=none, weak keys, no expiry, no validation)", "Insecure Refresh Token Handling", "Poor Session Management (missing rotation, long TTLs, no binding)", "Replay Attacks on Authentication Tokens"] },
-                        { "category": "Authorization Issues", "nested": ["Broken Object Level Authorization (BOLA / IDOR)", "Broken Function Level Authorization (BFLA)", "Mass Assignment / Parameter Tampering", "Vertical Privilege Escalation", "Horizontal Privilege Escalation", "Insecure Direct Access to Admin Endpoints"] },
-                        { "category": "Data Exposure & Privacy", "nested": ["Excessive Data Exposure (returning unnecessary fields)", "Sensitive Data Exposure in Responses", "Sensitive Data in Logs / Error Messages", "Lack of Data Minimization (PII leakage)", "Improper Data Classification / Tagging", "Information Disclosure through Metadata / Headers"] },
-                        { "category": "Rate Limiting & Abuse", "nested": ["Missing Rate Limiting on Auth Endpoints", "No Brute-force Protection (Password/OTP/2FA)", "Lack of Quotas for API Keys", "Unlimited File Uploads or Large Payload Abuse", "DoS via Large or Complex Requests"] },
-                        { "category": "Injection Attacks", "nested": ["SQL Injection in API Params", "NoSQL Injection", "GraphQL Injection (nested queries, field injection)", "LDAP Injection", "Command Injection in API Calls", "Template / Expression Injection", "XPath / XML Injection"] },
-                        { "category": "API Design & Endpoint Issues", "nested": ["Exposed Admin APIs", "Exposed Debug / Staging Endpoints", "Verbose Error Responses", "Deprecated / Old Version APIs Accessible", "Overly Permissive Swagger / OpenAPI Docs", "Insecure Default Routes"] },
-                        { "category": "Transport & Protocol Security", "nested": ["Insecure Transport (HTTP, Weak TLS)", "Missing HSTS on API Endpoints", "TLS Certificate Misconfigurations", "Insecure gRPC Endpoints (no mTLS, no auth)", "Insecure WebSocket Channels (no auth, weak origin checks)"] },
-                        { "category": "Business Logic Vulnerabilities", "nested": ["Price Manipulation / Parameter Tampering", "Transaction Replay Attacks", "Lack of Idempotency (double spending)", "Race Conditions in API Calls", "Improper Workflow Enforcement (skipping steps)"] },
-                        { "category": "Webhook & Third-party Integrations", "nested": ["Insecure Webhook Verification (no signature/HMAC)", "Replay Attacks on Webhook Payloads", "Insecure Callback URLs (Open Redirects, SSRF)", "Blind Trust in Third-party Responses"] },
-                        { "category": "CORS & Cross-domain Issues", "nested": ["Misconfigured CORS (wildcard with credentials)", "Overly Permissive Preflight Responses", "Cross-domain Credential Leakage"] },
-                        { "category": "File Handling & Upload APIs", "nested": ["Unrestricted File Uploads", "Path Traversal via Filename", "MIME Type Confusion", "Upload of Executable Scripts / Webshells", "Direct Access to Uploaded Files (no auth, no randomization)"] },
-                        { "category": "SSRF & Server-side Issues", "nested": ["SSRF via URL Fetch APIs", "SSRF via File Upload / Image Processing", "DNS Rebinding in API Calls", "Blind SSRF with Out-of-band Interaction"] },
-                        { "category": "GraphQL Specific Issues", "nested": ["Introspection Enabled in Production", "Over-fetching / Excessive Query Depth", "No Complexity Limits (DoS via deep queries)", "Missing Authorization on Fields", "Batch Queries Abuse"] },
-                        { "category": "WebSocket / Real-time API Issues", "nested": ["Missing Authentication on WS Upgrade", "Missing Authorization per Message Type", "Lack of Rate Limiting / Flood Protection", "Trusting Client-side Event Data"] },
-                        { "category": "Misc / Advanced API Attacks", "nested": ["Host Header Injection / Routing Confusion", "HTTP Request Smuggling", "Cache Poisoning via API Proxies", "Insecure API Gateways / Load Balancers", "Shadow APIs (undocumented, forgotten endpoints)", "Zombie APIs (deprecated but still live)"] }
-                    ]
-                },
-                {
-                    title: "12. Business Logic Vulnerabilities",
-                    items: [ "Bypass of workflow steps (skip payment → success)", "Parameter tampering (price manipulation)", "Race conditions (double spend / multiple redemption)", "Coupon/voucher abuse", "Account takeover via flawed flows", "Privilege creep (upgrading role through logic flaw)", "Referral/invite abuse", "Improper concurrency control" ]
-                },
-                {
-                    title: "13. Cryptography & Sensitive Data",
-                    items: [ "Hardcoded API keys/secrets", "Weak encryption algorithms (MD5, SHA1, RC4)", "Insecure random generators", "Sensitive data in GET URLs", "Token leakage via logs/referrers", "Unencrypted storage (DB, backups)", { "text": "TLS misconfigurations", "nested": ["Weak cipher suites", "TLS downgrade", "Self-signed or expired certs", "Missing HSTS"] } ]
-                },
-                {
-                    title: "14. Security Misconfigurations",
-                    items: [ "Directory listing enabled", "Default pages/admin panels accessible", "Debug mode enabled", "Verbose error messages", "CORS misconfiguration", "HTTP methods enabled (PUT, DELETE, TRACE)", { "text": "Missing or weak security headers", "nested": ["CSP", "X-Frame-Options", "X-Content-Type-Options", "Referrer-Policy"] } ]
-                },
-                {
-                    title: "15. Open Redirects",
-                    items: [ "Parameter-based redirects without validation", "Chained open redirects (via URL shorteners)", "Open redirect inside OAuth flows" ]
-                },
-                {
-                    title: "16. Clickjacking / UI Redress",
-                    items: [ "Missing X-Frame-Options", "Missing frame-ancestors CSP", "Drag-and-drop UI attacks", "Clipboard injection" ]
-                },
-                {
-                    title: "17. WebSockets",
-                    items: [ "No authentication on socket upgrade", "CSRF on WebSocket handshake", "Insecure origin checks", "Message tampering (no validation)" ]
-                },
-                {
-                    title: "18. Deserialization",
-                    items: [ "Insecure deserialization in Java/PHP/Python/.NET", "Remote code execution via gadgets", "Mass assignment / binding issues", "Deserialization DoS (billion object graph)" ]
-                },
-                {
-                    title: "19. Cloud / Infrastructure",
-                    items: [ "Publicly exposed cloud storage buckets", "Publicly writable buckets", "Exposed cloud metadata APIs", "Over-permissive IAM roles", "Misconfigured CI/CD pipelines", "Secrets in container images", "Kubernetes misconfig (dashboard exposed)" ]
-                },
-                {
-                    title: "20. Supply Chain / Dependency",
-                    items: [ "Outdated vulnerable libraries", "Dependency confusion (internal pkg names)", "Typosquatting packages", "Malicious pre/post-install scripts", "Compromised third-party scripts" ]
-                },
-                {
-                    title: "21. Other / Misc",
-                    items: [ "HTTP request smuggling", "Host header injection", "Cache poisoning", "Web cache deception", "Email header injection", "SMTP injection", "CSV injection (Excel formula injection)", "Race conditions (TOCTOU)", "SSRF to RCE chaining", "Prototype pollution (JS apps)", "Insecure regex (ReDoS)" ]
-                }
-            ];
-
-            const checklistContainer = document.getElementById('checklist-container');
-            const mainArrowSVG = `<svg class="arrow w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
-            const nestedArrowSVG = `<svg class="arrow-nested w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
-
-            function createChecklistItemHTML(item, isNested = false) {
-                 return `<div class="checklist-item ${isNested ? 'nested-item' : ''}"><div class="flex items-center"><input type="checkbox"><label>${item}</label></div></div>`;
+        // --- DATA SOURCE ---
+        const vaptData = [
+            {
+                title: "1. Web Application",
+                icon: "fa-globe",
+                categories: [
+                    {
+                        title: "★ OWASP Top 10 (2025)",
+                        isOwasp: true,
+                        tasks: [
+                            "A01: Broken Access Control (IDOR, PrivEsc)",
+                            "A02: Cryptographic Failures (Sensitive Data)",
+                            "A03: Injection (SQLi, XSS, Cmd Inj)",
+                            "A04: Insecure Design (Logic Flaws)",
+                            "A05: Security Misconfiguration",
+                            "A06: Vuln & Outdated Components",
+                            "A07: Ident & Auth Failures (Brute Force)",
+                            "A08: Software & Data Integrity Failures",
+                            "A09: Logging & Monitoring Failures",
+                            "A10: SSRF (Server-Side Request Forgery)"
+                        ]
+                    },
+                    {
+                        title: "1.1 Reconnaissance",
+                        tasks: [
+                            "Subdomain Enumeration",
+                            "Tech Stack Fingerprinting",
+                            "Directory Fuzzing",
+                            "Google Dorking for Files",
+                            "GitHub Secret Scanning",
+                            "Wayback Machine Analysis",
+                            "Port Scanning (Full TCP/UDP)"
+                        ]
+                    },
+                    {
+                        title: "1.2 Authentication",
+                        tasks: [
+                            "Username Enumeration",
+                            "Brute Force / Rate Limit Bypass",
+                            "2FA/MFA Bypass Scenarios",
+                            "JWT Analysis (None Algo, Weak Secret)",
+                            "OAuth 2.0 Implementation Flaws",
+                            "Session Fixation Tests",
+                            "Default Credentials Check"
+                        ]
+                    },
+                    {
+                        title: "1.3 Access Control",
+                        tasks: [
+                            "IDOR in URL/Body Parameters",
+                            "Vertical Privilege Escalation",
+                            "Horizontal Privilege Escalation",
+                            "Forced Browsing to Admin Pages",
+                            "Missing Function Level Access"
+                        ]
+                    },
+                    {
+                        title: "1.4 Input Validation",
+                        tasks: [
+                            "Reflected & Stored XSS",
+                            "SQL Injection (Blind/Error-based)",
+                            "Command Injection (OS Cmds)",
+                            "SSTI (Template Injection)",
+                            "XML External Entity (XXE)",
+                            "File Upload (RCE, Shells)"
+                        ]
+                    },
+                    {
+                        title: "1.5 Business Logic",
+                        tasks: [
+                            "Price Manipulation",
+                            "Quantity Tampering",
+                            "Workflow Bypass",
+                            "Race Conditions (Coupons/Wallet)"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "2. API Security",
+                icon: "fa-server",
+                categories: [
+                    {
+                        title: "★ OWASP API Top 10",
+                        isOwasp: true,
+                        tasks: [
+                            "API1: BOLA (Broken Object Level Auth)",
+                            "API2: Broken Authentication",
+                            "API3: BOPLA (Object Property Auth)",
+                            "API4: Unrestricted Resource Consumption",
+                            "API5: BFLA (Function Level Auth)",
+                            "API6: Unrestricted Access to Flows",
+                            "API7: SSRF in API",
+                            "API8: Security Misconfiguration",
+                            "API9: Improper Inventory",
+                            "API10: Unsafe Consumption"
+                        ]
+                    },
+                    {
+                        title: "2.1 REST API Checks",
+                        tasks: [
+                            "HTTP Method Tampering",
+                            "Mass Assignment (JSON Pollution)",
+                            "Content-Type Spoofing",
+                            "Improper Error Handling",
+                            "JWT Token Analysis"
+                        ]
+                    },
+                    {
+                        title: "2.2 GraphQL Checks",
+                        tasks: [
+                            "Introspection Query Enabled",
+                            "Query Depth/Complexity DoS",
+                            "Batching Attacks",
+                            "Field Suggestion Abuse",
+                            "Resolver Authorization Bypass"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "3. Cloud Security",
+                icon: "fa-cloud",
+                categories: [
+                    {
+                        title: "★ OWASP Cloud Top 10",
+                        isOwasp: true,
+                        tasks: [
+                            "CN1: Insecure Cloud Config",
+                            "CN2: Injection Flaws",
+                            "CN3: Improper Auth & Authorization",
+                            "CN4: CI/CD Pipeline Flaws",
+                            "CN5: Secrets Management",
+                            "CN6: SSRF (Metadata Abuse)",
+                            "CN7: Serverless Deployment",
+                            "CN8: Insecure Logging",
+                            "CN9: Known Vulnerabilities",
+                            "CN10: Unsafe APIs"
+                        ]
+                    },
+                    {
+                        title: "3.1 AWS Assessment",
+                        tasks: [
+                            "S3 Bucket Public Access",
+                            "IAM Privilege Escalation",
+                            "EC2 Metadata SSRF (IMDSv1)",
+                            "Lambda Code Injection",
+                            "Route53 Dangling DNS"
+                        ]
+                    },
+                    {
+                        title: "3.2 Azure Assessment",
+                        tasks: [
+                            "Blob Storage Exposure",
+                            "Azure AD Auth Flaws",
+                            "Key Vault Access Policies",
+                            "Automation Account Perms"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "4. Mobile Security",
+                icon: "fa-mobile-screen",
+                categories: [
+                    {
+                        title: "★ OWASP Mobile Top 10",
+                        isOwasp: true,
+                        tasks: [
+                            "M1: Improper Credential Usage",
+                            "M2: Supply Chain Security",
+                            "M3: Insecure Auth/Authz",
+                            "M4: Input/Output Validation",
+                            "M5: Insecure Communication",
+                            "M6: Inadequate Privacy",
+                            "M7: Binary Protections",
+                            "M8: Security Misconfiguration",
+                            "M9: Insecure Data Storage",
+                            "M10: Insufficient Cryptography"
+                        ]
+                    },
+                    {
+                        title: "4.1 Android Checks",
+                        tasks: [
+                            "Decompilation Review",
+                            "Hardcoded Secrets (strings.xml)",
+                            "Exported Components",
+                            "Deep Link / Intent URI Vulns",
+                            "Root Detection Bypass",
+                            "SSL Pinning Bypass"
+                        ]
+                    },
+                    {
+                        title: "4.2 iOS Checks",
+                        tasks: [
+                            "Jailbreak Detection Bypass",
+                            "Info.plist (ATS)",
+                            "Keychain Data Storage",
+                            "URL Scheme Handling"
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "5. Network & IoT",
+                icon: "fa-network-wired",
+                categories: [
+                    {
+                        title: "★ OWASP IoT Top 10",
+                        isOwasp: true,
+                        tasks: [
+                            "I1: Weak Passwords",
+                            "I2: Insecure Network Services",
+                            "I3: Insecure Ecosystem Interfaces",
+                            "I4: Insecure Update Mechanism",
+                            "I5: Insecure Components",
+                            "I6: Privacy Protection",
+                            "I7: Insecure Data Transfer",
+                            "I8: Device Management",
+                            "I9: Default Settings",
+                            "I10: Physical Hardening"
+                        ]
+                    },
+                    {
+                        title: "5.1 Network Infra",
+                        tasks: [
+                            "Port Scanning (Full TCP/UDP)",
+                            "Service Version Enumeration",
+                            "SMB/NetBIOS Vulns",
+                            "Weak SSL/TLS Ciphers",
+                            "Default Panel Credentials"
+                        ]
+                    }
+                ]
             }
+        ];
 
-            checklistData.forEach(section => {
-                const details = document.createElement('details');
-                
-                const summary = document.createElement('summary');
-                summary.className = 'p-4 font-semibold text-lg flex justify-between items-center';
-                summary.innerHTML = `<span>${section.title}</span>${mainArrowSVG}`;
-                
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'p-4 space-y-3';
-
-                section.items.forEach(item => {
-                    if (typeof item === 'string') {
-                        contentDiv.innerHTML += createChecklistItemHTML(item);
-                    } else if (item.text) { 
-                        let nestedHTML = item.nested.map(subItem => createChecklistItemHTML(subItem, true)).join('');
-                        contentDiv.innerHTML += `
-                            <details class="sub-details">
-                                <summary class="flex items-center w-full">
-                                    <div class="flex items-center flex-grow">
-                                        <input type="checkbox" class="mr-3">
-                                        ${nestedArrowSVG}
-                                        <label class="cursor-pointer">${item.text}</label>
-                                    </div>
-                                </summary>
-                                <div class="pt-2 pl-4 space-y-3">${nestedHTML}</div>
-                            </details>
-                        `;
-                    } else if (item.category) { 
-                        let nestedChecklistHTML = item.nested.map(subItem => createChecklistItemHTML(subItem)).join('');
-                        contentDiv.innerHTML += `
-                            <details class="sub-details">
-                                <summary class="p-3 font-semibold flex justify-between items-center">${item.category} <span class="arrow text-gray-500 text-xs">${mainArrowSVG}</span></summary>
-                                <div class="p-3 border-t border-slate-200 space-y-3">${nestedChecklistHTML}</div>
-                            </details>
-                        `;
-                    }
-                });
-
-                details.appendChild(summary);
-                details.appendChild(contentDiv);
-                checklistContainer.appendChild(details);
-            });
-
-            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
-            const progressBar = document.getElementById('progress-bar');
-            const progressText = document.getElementById('progress-text');
-            const searchBox = document.getElementById('search-box');
-            const resetButton = document.getElementById('reset-button');
-            const totalItems = checkboxes.length;
-
-            const updateProgress = () => {
-                const checkedItems = document.querySelectorAll('.checklist-item input[type="checkbox"]:checked').length;
-                const percentage = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
-                progressBar.style.width = `${percentage}%`;
-                progressText.textContent = `${percentage}%`;
-            };
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', (e) => {
-                    e.target.closest('.checklist-item').classList.toggle('completed', e.target.checked);
-                    updateProgress();
-                });
-            });
-
-            searchBox.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                 document.querySelectorAll('#checklist-container > details').forEach(mainAccordion => {
-                    let mainHasVisibleItem = false;
-                    
-                    mainAccordion.querySelectorAll('.checklist-item, .sub-details > summary').forEach(item => {
-                        const isMatch = item.textContent.toLowerCase().includes(searchTerm);
-                        const container = item.closest('.checklist-item') || item.closest('.sub-details');
-                        if(container) container.style.display = isMatch ? 'block' : 'none';
-                        if(isMatch) mainHasVisibleItem = true;
-                    });
-                    
-                    if (searchTerm.length > 0) {
-                         mainAccordion.open = mainHasVisibleItem;
-                    }
-                });
-            });
-
-            resetButton.addEventListener('click', () => {
-                checkboxes.forEach(cb => {
-                    cb.checked = false;
-                    cb.closest('.checklist-item').classList.remove('completed');
-                });
-                document.querySelectorAll('#checklist-container details').forEach(acc => acc.open = false);
-                updateProgress();
-            });
+        // --- TOOL HELPER ---
+        function getSmartTools(taskName) {
+            const t = taskName.toLowerCase();
+            const tools = [];
             
-            document.querySelectorAll('details').forEach(detail => {
-                detail.addEventListener('toggle', (e) => {
-                    const arrow = e.currentTarget.querySelector(':scope > summary > .arrow, :scope > summary > .arrow-nested');
-                    if(arrow) {
-                       if (e.currentTarget.open) {
-                            arrow.style.transform = 'rotate(90deg)';
-                        } else {
-                            arrow.style.transform = 'rotate(0deg)';
-                        }
-                    }
-                });
-            });
+            if(t.includes('sql')) tools.push('SQLMap', 'Burp');
+            if(t.includes('xss')) tools.push('Dalfox', 'XSStrike');
+            if(t.includes('subdomain')) tools.push('Subfinder', 'Amass');
+            if(t.includes('directory') || t.includes('fuzz')) tools.push('FFuF', 'Dirsearch');
+            if(t.includes('jwt')) tools.push('JWT_Tool');
+            if(t.includes('git')) tools.push('TruffleHog');
+            if(t.includes('s3') || t.includes('bucket')) tools.push('AWS CLI', 'CloudSploit');
+            if(t.includes('ssrf')) tools.push('SSRFmap', 'Burp Collab');
+            if(t.includes('graphql')) tools.push('InQL', 'GraphQL Voyager');
+            if(t.includes('android') || t.includes('apk')) tools.push('Jadx', 'Frida');
+            if(t.includes('ios') || t.includes('plist')) tools.push('Objection', 'MobSF');
+            if(t.includes('port') || t.includes('nmap')) tools.push('Nmap');
+            if(t.includes('burp')) tools.push('Burp Suite');
+            if(t.includes('idor')) tools.push('Authorize (Burp)');
+            if(t.includes('api')) tools.push('Postman', 'Kiterunner');
             
-            // Prevent parent details from closing when a nested one is clicked
-            document.querySelectorAll('.sub-details summary').forEach(summary => {
-                summary.addEventListener('click', e => e.stopPropagation());
-            });
-
-
-            updateProgress();
-
-            // --- AI Chatbot Logic ---
-            const chatBubble = document.getElementById('chat-bubble');
-            const chatWindow = document.getElementById('chat-window');
-            const chatForm = document.getElementById('chat-form');
-            const chatInput = document.getElementById('chat-input');
-            const chatBody = document.getElementById('chat-body');
-            const chatCloseBtn = document.getElementById('chat-close-btn');
-
-            function markdownToHtml(text) {
-                // Convert bold text **text** to <strong>text</strong>
-                let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-                const lines = html.split('\n');
-                let inList = false;
-                let processedHtml = '';
-
-                lines.forEach(line => {
-                    const trimmedLine = line.trim();
-                    if (trimmedLine.startsWith('* ')) {
-                        if (!inList) {
-                            processedHtml += '<ul>';
-                            inList = true;
-                        }
-                        processedHtml += `<li>${trimmedLine.substring(2)}</li>`;
-                    } else {
-                        if (inList) {
-                            processedHtml += '</ul>';
-                            inList = false;
-                        }
-                        // Add line breaks for paragraphs, but not for empty lines between list items
-                        if(trimmedLine.length > 0) {
-                            processedHtml += `<p>${trimmedLine}</p>`;
-                        }
-                    }
-                });
-
-                if (inList) {
-                    processedHtml += '</ul>';
-                }
-                return processedHtml.replace(/<p><\/p>/g, '');
-            }
-
-            chatBubble.addEventListener('click', () => {
-                chatWindow.classList.toggle('open');
-            });
+            if(tools.length === 0) tools.push('Manual Review', 'Burp Suite');
             
-            chatCloseBtn.addEventListener('click', () => {
-                 chatWindow.classList.remove('open');
-            });
+            return [...new Set(tools)].slice(0, 3);
+        }
 
-            const apiKey = ""; // API key will be handled by the environment.
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=AIzaSyDAuybwk7mniO6OOXA3bJWwOJEYH3g_N6c`;
+        // --- APP LOGIC ---
+        const app = {
+            state: {},
+            theme: 'light', // Default to Light
+            activeDomainIdx: null,
+            activeCategoryIdx: null,
 
-            const systemPrompt = `You are an expert-level Pentesting Assistant bot. Your purpose is to help security engineers with this comprehensive pentesting checklist.
-- **Scope:** Your knowledge is strictly limited to penetration testing, ethical hacking, vulnerability assessment, and related security tools and concepts. You should be able to explain any term or vulnerability mentioned in the checklist (like IDOR, BOLA, SSRF, XSS, etc.), suggest testing methodologies, and recommend open-source tools.
-- **Persona:** Act as a professional, knowledgeable, and concise assistant. Use technical and precise language suitable for a security engineer.
-- **Adaptive Language:** If the user writes to you in Hinglish (e.g., 'IDOR kya hai?'), you MUST respond in Hinglish to make them comfortable. Otherwise, stick to professional English.
-- **Output Format:** Your response MUST be direct and start immediately with the information requested. Do not include conversational filler, preambles, or starters like 'J,' 'Okay,' or 'Sure, here is...'.
-- **Refusal:** If asked anything outside the scope of pentesting and cybersecurity (e.g., general conversation, programming questions not related to security, etc.), you must politely state that your function is limited to pentesting assistance. For example: "My apologies, I can only provide information related to penetration testing concepts."
-- **Identity:** You must not reveal that you are a language model or mention Google/Gemini. Your identity is solely that of a Pentesting Assistant integrated into this checklist.`;
-
-            chatForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const userQuery = chatInput.value.trim();
-                if (!userQuery) return;
-
-                const userMessageElem = document.createElement('div');
-                userMessageElem.className = 'chat-message user-message';
-                userMessageElem.textContent = userQuery;
-                chatBody.appendChild(userMessageElem);
-                chatInput.value = '';
-                chatBody.scrollTop = chatBody.scrollHeight;
-
-                const typingIndicator = document.createElement('div');
-                typingIndicator.className = 'typing-indicator';
-                typingIndicator.textContent = 'Assistant is thinking...';
-                chatBody.appendChild(typingIndicator);
-                chatBody.scrollTop = chatBody.scrollHeight;
-
+            init() {
                 try {
-                    const payload = {
-                        contents: [{ parts: [{ text: userQuery }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                    const saved = localStorage.getItem('vapt_state_v5');
+                    if(saved) this.state = JSON.parse(saved);
+                    
+                    const savedTheme = localStorage.getItem('vapt_theme');
+                    if(savedTheme) this.theme = savedTheme;
+                    this.applyTheme();
+
+                    this.renderSidebar();
+                    this.updateGlobalProgress();
+                } catch(e) {
+                    console.error("Init Error", e);
+                }
+            },
+
+            getKey(dIdx, cIdx, tIdx) {
+                return `${dIdx}_${cIdx}_${tIdx}`;
+            },
+            
+            toggleTheme() {
+                this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('vapt_theme', this.theme);
+                this.applyTheme();
+            },
+
+            applyTheme() {
+                if(this.theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.remove('light');
+                } else {
+                    document.documentElement.classList.add('light');
+                    document.documentElement.classList.remove('dark');
+                }
+            },
+
+            renderSidebar() {
+                const container = document.getElementById('sidebar-container');
+                const searchVal = document.getElementById('search-input').value.toLowerCase();
+                container.innerHTML = '';
+
+                vaptData.forEach((domain, dIdx) => {
+                    const matchesSearch = !searchVal || 
+                        domain.title.toLowerCase().includes(searchVal) || 
+                        domain.categories.some(c => c.title.toLowerCase().includes(searchVal));
+                    
+                    if(!matchesSearch) return;
+
+                    const isOpen = this.state[`open_${dIdx}`] || !!searchVal;
+
+                    const domainEl = document.createElement('div');
+                    domainEl.className = 'mb-1';
+                    
+                    domainEl.innerHTML = `
+                        <div onclick="app.toggleDomain(${dIdx})" 
+                             class="sidebar-item flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${isOpen ? 'active-domain' : ''} select-none group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-5 text-center opacity-70 group-hover:opacity-100 group-hover:text-indigo-500 transition-colors"><i class="fa-solid ${domain.icon}"></i></div>
+                                <span class="text-xs font-semibold uppercase tracking-wide">${domain.title}</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300 ${isOpen ? 'rotate-90' : ''}"></i>
+                        </div>
+                        <div class="accordion-content ${isOpen ? 'open' : ''}">
+                            <div class="pl-9 pr-2 py-1 space-y-0.5 mt-1" id="cat-container-${dIdx}"></div>
+                        </div>
+                    `;
+
+                    const catContainer = domainEl.querySelector(`#cat-container-${dIdx}`);
+                    
+                    domain.categories.forEach((cat, cIdx) => {
+                        if(searchVal && !cat.title.toLowerCase().includes(searchVal) && !domain.title.toLowerCase().includes(searchVal)) return;
+
+                        const total = cat.tasks.length;
+                        let done = 0;
+                        cat.tasks.forEach((_, tIdx) => {
+                            if(this.state[this.getKey(dIdx, cIdx, tIdx)]) done++;
+                        });
+
+                        const isActive = this.activeDomainIdx === dIdx && this.activeCategoryIdx === cIdx;
+                        
+                        const baseClass = cat.isOwasp 
+                            ? (isActive ? 'owasp-badge border-l-2' : 'owasp-badge opacity-70 hover:opacity-100 border-l-2 border-transparent') 
+                            : (isActive ? 'bg-[var(--hover-bg)] text-[var(--text-primary)] border-l-2 border-indigo-500' : 'text-[var(--text-secondary)] hover:bg-[var(--hover-bg)] hover:text-[var(--text-primary)] border-l-2 border-transparent');
+
+                        const catEl = document.createElement('div');
+                        catEl.className = `${baseClass} text-xs px-3 py-2 rounded-r-md cursor-pointer flex justify-between items-center select-none transition-all`;
+                        catEl.onclick = (e) => { e.stopPropagation(); this.loadCategory(dIdx, cIdx); };
+                        
+                        catEl.innerHTML = `
+                            <span class="truncate pr-2 font-medium">${cat.title}</span>
+                            ${done > 0 && done === total ? '<i class="fa-solid fa-check text-emerald-500"></i>' : ''}
+                        `;
+                        catContainer.appendChild(catEl);
+                    });
+
+                    container.appendChild(domainEl);
+                });
+            },
+
+            loadCategory(dIdx, cIdx) {
+                this.activeDomainIdx = dIdx;
+                this.activeCategoryIdx = cIdx;
+                
+                const domain = vaptData[dIdx];
+                const category = domain.categories[cIdx];
+                
+                document.getElementById('header-domain').innerText = domain.title.toUpperCase();
+                const titleEl = document.getElementById('header-title');
+                titleEl.innerText = category.title;
+                
+                if(category.isOwasp) {
+                    titleEl.className = "text-2xl font-bold text-amber-400 tracking-tight drop-shadow-sm";
+                } else {
+                    titleEl.className = "text-2xl font-bold text-[var(--text-primary)] tracking-tight";
+                }
+
+                const list = document.getElementById('tasks-list');
+                list.innerHTML = '';
+
+                let doneCount = 0;
+                
+                category.tasks.forEach((task, tIdx) => {
+                    const key = this.getKey(dIdx, cIdx, tIdx);
+                    const isChecked = !!this.state[key];
+                    if(isChecked) doneCount++;
+                    
+                    const tools = getSmartTools(task);
+
+                    const taskEl = document.createElement('div');
+                    taskEl.className = `task-card rounded-xl p-4 mb-3 flex items-start gap-4 cursor-pointer select-none ${isChecked ? 'checked' : ''}`;
+                    taskEl.onclick = (e) => {
+                        if(e.target.type !== 'checkbox') this.toggleTask(dIdx, cIdx, tIdx);
                     };
 
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`API error: ${response.statusText}`);
-                    }
+                    taskEl.innerHTML = `
+                        <div class="pt-0.5 shrink-0">
+                            <input type="checkbox" class="custom-checkbox" 
+                                   ${isChecked ? 'checked' : ''} 
+                                   onchange="app.toggleTask(${dIdx}, ${cIdx}, ${tIdx})">
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-medium ${isChecked ? 'line-through text-[var(--text-secondary)]' : 'text-[var(--text-primary)]'}">
+                                ${task}
+                            </div>
+                            <div class="mt-2 flex flex-wrap gap-1.5">
+                                ${tools.map(t => `<span class="tool-badge"><i class="fa-solid fa-wrench text-[0.6rem]"></i> ${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(taskEl);
+                });
 
-                    const result = await response.json();
-                    const botResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that right now.";
-                    
-                    chatBody.removeChild(typingIndicator);
-                    const botMessageElem = document.createElement('div');
-                    botMessageElem.className = 'chat-message bot-message';
-                    botMessageElem.innerHTML = markdownToHtml(botResponseText); // Use innerHTML and the formatter function
-                    chatBody.appendChild(botMessageElem);
-                    chatBody.scrollTop = chatBody.scrollHeight;
+                document.getElementById('category-stats').innerHTML = `${doneCount}<span class="text-[var(--text-secondary)] text-xl">/${category.tasks.length}</span>`;
+                this.renderSidebar(); 
+            },
 
-                } catch (error) {
-                    console.error("Error calling Gemini API:", error);
-                    chatBody.removeChild(typingIndicator);
-                    const errorMessageElem = document.createElement('div');
-                    errorMessageElem.className = 'chat-message bot-message';
-                    errorMessageElem.textContent = "Oops! Something went wrong. Please try again later.";
-                    chatBody.appendChild(errorMessageElem);
-                    chatBody.scrollTop = chatBody.scrollHeight;
+            toggleDomain(dIdx) {
+                // Exclusive Accordion Logic: Close others
+                vaptData.forEach((_, idx) => {
+                    if(idx !== dIdx) this.state[`open_${idx}`] = false;
+                });
+
+                this.state[`open_${dIdx}`] = !this.state[`open_${dIdx}`];
+                this.save();
+                this.renderSidebar();
+            },
+
+            toggleTask(dIdx, cIdx, tIdx) {
+                const key = this.getKey(dIdx, cIdx, tIdx);
+                if(this.state[key]) delete this.state[key];
+                else this.state[key] = true;
+                
+                this.save();
+                if(this.activeDomainIdx === dIdx && this.activeCategoryIdx === cIdx) {
+                    this.loadCategory(dIdx, cIdx);
                 }
-            });
-        });
+                this.updateGlobalProgress();
+            },
+
+            updateGlobalProgress() {
+                let total = 0, completed = 0;
+                vaptData.forEach((d, dIdx) => {
+                    d.categories.forEach((c, cIdx) => {
+                        c.tasks.forEach((_, tIdx) => {
+                            total++;
+                            if(this.state[this.getKey(dIdx, cIdx, tIdx)]) completed++;
+                        });
+                    });
+                });
+
+                const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+                document.getElementById('global-percent').innerText = `${pct}%`;
+                document.getElementById('global-progress-bar').style.width = `${pct}%`;
+                
+                if(pct === 100 && total > 0) {
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                }
+            },
+
+            save() {
+                localStorage.setItem('vapt_state_v5', JSON.stringify(this.state));
+            },
+
+            resetData() {
+                if(confirm("Are you sure you want to clear all progress?")) {
+                    this.state = {};
+                    this.save();
+                    this.init();
+                    document.getElementById('tasks-list').innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center text-[var(--text-secondary)] opacity-60">
+                            <div class="w-20 h-20 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center mb-6 shadow-xl">
+                                <i class="fa-solid fa-list-check text-3xl"></i>
+                            </div>
+                            <p class="text-sm font-medium">Data reset. Select a category to start.</p>
+                        </div>`;
+                    document.getElementById('header-title').innerText = "Dashboard";
+                    document.getElementById('category-stats').innerHTML = "0<span class='text-[var(--text-secondary)] text-xl'>/0</span>";
+                }
+            }
+        };
+
+        // Search Listener
+        document.getElementById('search-input').addEventListener('input', () => app.renderSidebar());
+
+        // Start
+        app.init();
     </script>
 </body>
 </html>
-
